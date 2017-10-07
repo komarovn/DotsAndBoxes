@@ -11,6 +11,7 @@ public abstract class ClientConstants {
     public static final String SERVER_NAME = "localhost";
     public static final int PORT_NUMBER = 59342;
 
+    public static final String USER_NAME = "userName";
     public static final String TYPE = "type";
     public static final String CLIENT_STATE = "clientState";
     public static final String SERVER_STATE = "serverState";

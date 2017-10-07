@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  DOTS AND BOXES GAME (WRITTEN ON SOCKETS)
+
+  Developed by Nikolay Komarov
+
+  (c) Lobachevsky University, 2017
+-->
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="274.0" prefWidth="533.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dotsandboxes.client.gui.controller.LoginController">
+   <children>
+      <Label layoutX="101.0" layoutY="49.0" text="Welcome to Dots and Boxes!" textAlignment="CENTER">
+         <font>
+            <Font size="26.0" />
+         </font></Label>
+      <Label layoutX="38.0" layoutY="146.0" text="Your Name:" textAlignment="RIGHT">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <TextField fx:id="userNameTextfield" layoutX="123.0" layoutY="144.0" prefHeight="25.0" prefWidth="287.0" />
+      <Button fx:id="playButton" layoutX="154.0" layoutY="208.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Play!">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="exitButton" layoutX="277.0" layoutY="208.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="102.0" text="Exit">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" layoutY="111.0" text="Server is unavailable now" textAlignment="CENTER" />
+   </children>
+</Pane>

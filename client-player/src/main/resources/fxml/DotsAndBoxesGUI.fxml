@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  DOTS AND BOXES GAME (WRITTEN ON SOCKETS)
+
+  Developed by Nikolay Komarov
+
+  (c) Lobachevsky University, 2017
+-->
+
+<?import javafx.scene.layout.Pane?>
+
+<Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dotsandboxes.client.gui.controller.DotsAndBoxesController">
+
+</Pane>
