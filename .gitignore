@@ -1,3 +1,7 @@
 /*.iml
 /out
 /.idea
+/client-player/target
+/server-player/target
+/client-player/*.iml
+/server-player/*.iml
