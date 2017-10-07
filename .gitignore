@@ -2,6 +2,6 @@
 /out
 /.idea
 /client-player/target
-/server-player/target
+/server-gaming-center/target
 /client-player/*.iml
-/server-player/*.iml
+/server-gaming-center/*.iml

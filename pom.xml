@@ -16,7 +16,7 @@
     <name>general_module</name>
 
     <modules>
-        <module>server-player</module>
+        <module>server-gaming-center</module>
         <module>client-player</module>
     </modules>
 
