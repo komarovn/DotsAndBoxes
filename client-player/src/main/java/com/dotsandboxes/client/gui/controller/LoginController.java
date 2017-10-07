@@ -44,7 +44,19 @@ public class LoginController implements Initializable {
     private TextField userNameTextfield;
 
     @FXML
+    private TextField rowsNumberTextBox;
+
+    @FXML
+    private TextField colsNumberTextBox;
+
+    @FXML
     private Label statusLabel;
+
+    @FXML
+    private Label rowsLabel;
+
+    @FXML
+    private Label columnsLabel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,6 +68,7 @@ public class LoginController implements Initializable {
                 }
             }
         });
+        setVisibleBoardSizePanel(false);
         playButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -84,6 +97,15 @@ public class LoginController implements Initializable {
         statusLabel.setVisible(!isConnected);
         playButton.setDisable(!isConnected);
         userNameTextfield.setDisable(!isConnected);
+        rowsNumberTextBox.setDisable(!isConnected);
+        colsNumberTextBox.setDisable(!isConnected);
+    }
+
+    public void setVisibleBoardSizePanel(boolean isVisible) {
+        colsNumberTextBox.setVisible(isVisible);
+        rowsNumberTextBox.setVisible(isVisible);
+        columnsLabel.setVisible(isVisible);
+        rowsLabel.setVisible(isVisible);
     }
 
     public void setMainApp(DotsAndBoxes mainApp) {
