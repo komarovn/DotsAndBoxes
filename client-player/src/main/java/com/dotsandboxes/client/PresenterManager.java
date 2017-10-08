@@ -25,6 +25,9 @@ public class PresenterManager<Controller> implements ResponseListener {
         MessageType type = (MessageType) response.getParameter(ClientConstants.TYPE);
         if (type != null) {
             switch (type) {
+                case TRY_CONNECT:
+                    processTryConnect(response);
+                    break;
                 case LOGIN:
                     if (controller instanceof LoginController) {
                         processLoginResponse(response);
@@ -36,8 +39,26 @@ public class PresenterManager<Controller> implements ResponseListener {
         }
     }
 
+    private void processTryConnect(Response response) {
+        boolean isFirstClient = (boolean) response.getParameter(ClientConstants.IS_FIRST_CLIENT);
+        boolean isGameCreated = (boolean) response.getParameter(ClientConstants.IS_GAME_CREATED);
+        ((LoginController) controller).setVisibleBoardSizePanel(isFirstClient);
+        if (!isFirstClient && !isGameCreated) {
+            ((LoginController) controller).applyWaitingState();
+        } else {
+            ((LoginController) controller).resolveWaitingState();
+        }
+    }
+
     private void processLoginResponse(Response response) {
-        if (response.getParameter(ClientConstants.MESSAGE) != null) {
+        if (response.getParameter(ClientConstants.IS_GAME_CREATED) != null) {
+            boolean isGameCreated = (boolean) response.getParameter(ClientConstants.IS_GAME_CREATED);
+            if (isGameCreated) {
+                ((LoginController) controller).resolveWaitingState();
+            } else {
+                ((LoginController) controller).applyWaitingState();
+            }
+        } else if (response.getParameter(ClientConstants.MESSAGE) != null) {
             String message = (String) response.getParameter(ClientConstants.MESSAGE);
             ((LoginController) controller).openMainFrame((String) response.getParameter(ClientConstants.USER_NAME));
             System.out.printf(message);

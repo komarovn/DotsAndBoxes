@@ -8,6 +8,7 @@
 package com.dotsandboxes.server.threads;
 
 import com.dotsandboxes.ServerConstants;
+import com.dotsandboxes.server.ServerManager;
 import com.dotsandboxes.server.threads.communication.RequestThread;
 import com.dotsandboxes.server.threads.communication.ResponseThread;
 import org.slf4j.Logger;
@@ -20,14 +21,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Server thread runs a server, so the main thread will be free for UI frame
+ * Server thread runs a server
  */
 public class ServerThread extends Thread {
 
     private Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
 
     private ServerSocket serverSocket = null;
-    private static List<Thread> communicationThreads = new ArrayList<>();
+    private static List<Thread> communicationRequestThreads = new ArrayList<>();
+    private static List<Thread> communicationResponseThreads = new ArrayList<>();
+
+    private ServerManager serverManager;
 
     @Override
     public void run() {
@@ -39,6 +43,7 @@ public class ServerThread extends Thread {
         LOGGER.info("SERVER IS STARTING...");
         try {
             this.serverSocket = new ServerSocket(ServerConstants.PORT_NUMBER);
+            this.serverManager = new ServerManager();
             LOGGER.info("SERVER HAS STARTED.");
         } catch (IOException ex) {
             LOGGER.info("SERVER START HAS FAILED!");
@@ -52,13 +57,13 @@ public class ServerThread extends Thread {
         while (!serverSocket.isClosed()) {
             try {
                 Socket clientSocket = serverSocket.accept();
-                RequestThread requestThread = new RequestThread(clientSocket);
+                RequestThread requestThread = new RequestThread(clientSocket, serverManager);
                 ResponseThread responseThread = new ResponseThread(clientSocket);
                 requestThread.addListener(responseThread);
                 requestThread.start();
                 responseThread.start();
-                communicationThreads.add(responseThread);
-                communicationThreads.add(requestThread);
+                communicationResponseThreads.add(responseThread);
+                communicationRequestThreads.add(requestThread);
             } catch (IOException ex) {
                 LOGGER.debug("Server socket is closed.");
             }
@@ -66,14 +71,13 @@ public class ServerThread extends Thread {
     }
 
     public synchronized void stopServer() {
-        for (Thread thread : communicationThreads) {
-            LOGGER.debug("Communication thread {} is stopped.", thread.getId());
-            if (thread instanceof RequestThread) {
-                ((RequestThread) thread).stopRequestThread();
-            }
-            if (thread instanceof ResponseThread) {
-                ((ResponseThread) thread).stopResponseThread();
-            }
+        for (Thread thread : communicationRequestThreads) {
+            LOGGER.debug("Communication request thread {} is stopped.", thread.getId());
+            ((RequestThread) thread).stopRequestThread();
+        }
+        for (Thread thread : communicationResponseThreads) {
+            LOGGER.debug("Communication response thread {} is stopped.", thread.getId());
+            ((ResponseThread) thread).stopResponseThread();
         }
         try {
             serverSocket.close();
@@ -84,8 +88,12 @@ public class ServerThread extends Thread {
         }
     }
 
-    public static List<Thread> getCommunicationThreads() {
-        return communicationThreads;
+    public static List<Thread> getCommunicationRequestThreads() {
+        return communicationRequestThreads;
+    }
+
+    public static List<Thread> getCommunicationResponseThreads() {
+        return communicationResponseThreads;
     }
 
 }

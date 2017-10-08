@@ -28,6 +28,8 @@ import java.util.ResourceBundle;
 public class LoginController implements Initializable {
     private final String SERVER_UNAVAILABLE = "Server is unavailable now";
     private final String FILL_FIELDS = "Please, fill your name";
+    private final String FILL_ALL_FIELDS = "Please, fill your name and size of board";
+    private final String PLEASE_WAIT = "Please, wait...";
 
     private DotsAndBoxes mainApp;
     private boolean isConnected = false;
@@ -64,7 +66,7 @@ public class LoginController implements Initializable {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode().equals(KeyCode.ENTER)) {
-                    connectAction();
+                    onPlayAction();
                 }
             }
         });
@@ -72,7 +74,7 @@ public class LoginController implements Initializable {
         playButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                connectAction();
+                onPlayAction();
             }
         });
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -101,6 +103,23 @@ public class LoginController implements Initializable {
         colsNumberTextBox.setDisable(!isConnected);
     }
 
+    public void applyWaitingState() {
+        setWaitingState(true);
+    }
+
+    public void resolveWaitingState() {
+        setWaitingState(false);
+    }
+
+    private void setWaitingState(boolean isWaiting) {
+        statusLabel.setText(PLEASE_WAIT);
+        statusLabel.setVisible(isWaiting);
+        userNameTextfield.setDisable(isWaiting);
+        rowsNumberTextBox.setDisable(isWaiting);
+        colsNumberTextBox.setDisable(isWaiting);
+        playButton.setDisable(isWaiting);
+    }
+
     public void setVisibleBoardSizePanel(boolean isVisible) {
         colsNumberTextBox.setVisible(isVisible);
         rowsNumberTextBox.setVisible(isVisible);
@@ -121,11 +140,21 @@ public class LoginController implements Initializable {
         mainApp.openMainFrame(userId);
     }
 
-    private void connectAction() {
+    private void onPlayAction() {
         if (!userNameTextfield.getText().isEmpty()) {
-            statusLabel.setVisible(false);
             Request request = new Request();
+            statusLabel.setVisible(false);
             request.setParameter(ClientConstants.TYPE, MessageType.LOGIN);
+            if (rowsNumberTextBox.isVisible()) {
+                if (rowsNumberTextBox.getText().isEmpty() || colsNumberTextBox.getText().isEmpty()) {
+                    statusLabel.setText(FILL_ALL_FIELDS);
+                    statusLabel.setVisible(true);
+                    return;
+                } else {
+                    request.setParameter(ClientConstants.BOARD_SIZE_ROWS, rowsNumberTextBox.getText());
+                    request.setParameter(ClientConstants.BOARD_SIZE_COLUMNS, colsNumberTextBox.getText());
+                }
+            }
             request.setParameter(ClientConstants.USER_NAME, userNameTextfield.getText());
             requestListener.sendRequest(request);
         }

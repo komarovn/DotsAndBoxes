@@ -8,6 +8,7 @@
 package com.dotsandboxes.server.threads.communication;
 
 import com.dotsandboxes.server.RequestProcessor;
+import com.dotsandboxes.server.ServerManager;
 import com.dotsandboxes.server.listeners.ResponseListener;
 import com.dotsandboxes.shared.Request;
 import com.dotsandboxes.shared.Response;
@@ -26,10 +27,12 @@ public class RequestThread extends Thread {
     private ObjectInputStream objectInputStream;
     private ResponseListener responseListener;
     private final RequestProcessor requestProcessor;
+    private final ServerManager serverManager;
 
-    public RequestThread(Socket clientSocket) {
+    public RequestThread(Socket clientSocket, ServerManager serverManager) {
         this.clientSocket = clientSocket;
         this.requestProcessor = new RequestProcessor(this);
+        this.serverManager = serverManager;
     }
 
     @Override
@@ -77,8 +80,16 @@ public class RequestThread extends Thread {
         sendResponse(response);
     }
 
+    public Socket getClientSocket() {
+        return clientSocket;
+    }
+
     public RequestProcessor getRequestProcessor() {
         return requestProcessor;
+    }
+
+    public ServerManager getServerManager() {
+        return serverManager;
     }
 
     public void sendResponse(Response response) {

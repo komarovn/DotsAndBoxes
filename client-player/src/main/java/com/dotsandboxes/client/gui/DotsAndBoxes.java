@@ -75,6 +75,11 @@ public class DotsAndBoxes extends Application {
         }
 
         controller.setStatusConnection(isConnected);
+        controller.applyWaitingState();
+
+        if (isConnected) {
+            sendInitialRequest();
+        }
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -90,6 +95,12 @@ public class DotsAndBoxes extends Application {
                 System.exit(0);
             }
         });
+    }
+
+    private void sendInitialRequest() {
+        Request request = new Request();
+        request.setParameter(ClientConstants.TYPE, MessageType.TRY_CONNECT);
+        requestThread.sendRequest(request);
     }
 
     public void openMainFrame(String userName) {
