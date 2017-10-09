@@ -41,6 +41,12 @@ public class PresenterManager<Controller> implements ResponseListener {
                         processLoadUsers(response);
                     }
                     break;
+                case UPDATE_STATE:
+                    processUpdateBoard(response);
+                    break;
+                case GAME_OVER:
+                    processGameOver(response);
+                    break;
                 case ADMINISTRATIVE:
                     break;
             }
@@ -76,5 +82,12 @@ public class PresenterManager<Controller> implements ResponseListener {
     private void processLoadUsers(Response response) {
         List<String> names = (List<String>) response.getParameter(ClientConstants.LIST_USERS);
         ((DotsAndBoxesController) controller).loadUsersData(names);
+    }
+
+    private void processUpdateBoard(Response response) {
+    }
+
+    private void processGameOver(Response response) {
+        // TODO: response contains an information about who won the game.
     }
 }

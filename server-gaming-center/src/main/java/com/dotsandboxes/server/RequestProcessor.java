@@ -43,6 +43,13 @@ public class RequestProcessor {
                     processLoadUsers(request, response);
                     response.setParameter(ServerConstants.TYPE, MessageType.LOAD_USERS);
                     break;
+                case CREATE_EDGE:
+                    processCreateEdge(request, response);
+                    break;
+                case UPDATE_STATE:
+                    break;
+                case GAME_OVER:
+                    break;
                 case ADMINISTRATIVE:
                     processAdministrativeRequest(request, response);
                     response.setParameter(ServerConstants.TYPE, MessageType.ADMINISTRATIVE);
@@ -100,6 +107,10 @@ public class RequestProcessor {
             LOGGER.info("User with address {} has been disconnected.", userAddress);
             owner.getServerManager().broadcastUserNames();
         }
+    }
+
+    private void processCreateEdge(Request request, Response response) {
+
     }
 
     private void processUnrecognizedMessageType(Response response) {
