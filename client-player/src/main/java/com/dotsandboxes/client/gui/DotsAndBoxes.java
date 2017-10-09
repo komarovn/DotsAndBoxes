@@ -112,6 +112,8 @@ public class DotsAndBoxes extends Application {
             controller.setMainApp(this);
             controller.setUserName(userName);
 
+            loadUsersData();
+
             PresenterManager<DotsAndBoxesController> presenterManager = new PresenterManager<>();
             presenterManager.setController(controller);
             controller.addRequestListener(requestThread);
@@ -122,5 +124,11 @@ public class DotsAndBoxes extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadUsersData() {
+        Request request = new Request();
+        request.setParameter(ClientConstants.TYPE, MessageType.LOAD_USERS);
+        requestThread.sendRequest(request);
     }
 }

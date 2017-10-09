@@ -7,7 +7,9 @@
  */
 package com.dotsandboxes.server.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UsersModel {
@@ -36,6 +38,18 @@ public class UsersModel {
 
     public boolean isAnyUsers() {
         return !users.isEmpty();
+    }
+
+    public List<String> getListOfUsers() {
+        List<String> names = new ArrayList<String>();
+
+        for (String name : users.values()) {
+            if (name != null) {
+                names.add(name);
+            }
+        }
+
+        return names;
     }
 
 }

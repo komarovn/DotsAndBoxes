@@ -8,8 +8,28 @@
   (c) Lobachevsky University, 2017
 -->
 
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
 <Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dotsandboxes.client.gui.controller.DotsAndBoxesController">
-
+   <children>
+      <SplitPane dividerPositions="0.3">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Players:" />
+                        <VBox fx:id="usersPane" prefHeight="200.0" prefWidth="100.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+        </items>
+      </SplitPane>
+   </children>
 </Pane>

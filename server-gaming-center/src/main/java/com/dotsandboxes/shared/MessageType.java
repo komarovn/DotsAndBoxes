@@ -10,5 +10,6 @@ package com.dotsandboxes.shared;
 public enum MessageType {
     ADMINISTRATIVE,
     LOGIN,
-    TRY_CONNECT
+    TRY_CONNECT,
+    LOAD_USERS
 }

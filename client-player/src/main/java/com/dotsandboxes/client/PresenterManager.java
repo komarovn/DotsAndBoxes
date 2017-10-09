@@ -8,10 +8,13 @@
 package com.dotsandboxes.client;
 
 import com.dotsandboxes.ClientConstants;
+import com.dotsandboxes.client.gui.controller.DotsAndBoxesController;
 import com.dotsandboxes.client.gui.controller.LoginController;
 import com.dotsandboxes.client.listeners.ResponseListener;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Response;
+
+import java.util.List;
 
 public class PresenterManager<Controller> implements ResponseListener {
     private Controller controller;
@@ -31,6 +34,11 @@ public class PresenterManager<Controller> implements ResponseListener {
                 case LOGIN:
                     if (controller instanceof LoginController) {
                         processLoginResponse(response);
+                    }
+                    break;
+                case LOAD_USERS:
+                    if (controller instanceof DotsAndBoxesController) {
+                        processLoadUsers(response);
                     }
                     break;
                 case ADMINISTRATIVE:
@@ -65,4 +73,8 @@ public class PresenterManager<Controller> implements ResponseListener {
         }
     }
 
+    private void processLoadUsers(Response response) {
+        List<String> names = (List<String>) response.getParameter(ClientConstants.LIST_USERS);
+        ((DotsAndBoxesController) controller).loadUsersData(names);
+    }
 }

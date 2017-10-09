@@ -36,15 +36,19 @@ public class RequestProcessor {
                     response.setParameter(ServerConstants.TYPE, MessageType.TRY_CONNECT);
                     break;
                 case LOGIN:
-                    receiveToken(request, response);
+                    processLogin(request, response);
                     response.setParameter(ServerConstants.TYPE, MessageType.LOGIN);
+                    break;
+                case LOAD_USERS:
+                    processLoadUsers(request, response);
+                    response.setParameter(ServerConstants.TYPE, MessageType.LOAD_USERS);
                     break;
                 case ADMINISTRATIVE:
                     processAdministrativeRequest(request, response);
                     response.setParameter(ServerConstants.TYPE, MessageType.ADMINISTRATIVE);
                     break;
                 default:
-                    unrecognizedMessageType(response);
+                    processUnrecognizedMessageType(response);
             }
         } else {
             nullMessageType(response);
@@ -59,11 +63,13 @@ public class RequestProcessor {
         owner.getServerManager().getUsers().addUser(userAddress, null);
     }
 
-    private void receiveToken(Request request, Response response) {
+    private void processLogin(Request request, Response response) {
         try {
             String userAddress = owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
             String userName = (String) request.getParameter(ServerConstants.USER_NAME);
             owner.getServerManager().getUsers().addUser(userAddress, userName);
+
+            owner.getServerManager().broadcastUserNames();
 
             if (!owner.getServerManager().getGameModel().isGameCreated()) {
                 int rowsNumber = Integer.parseInt((String) request.getParameter(ServerConstants.BOARD_SIZE_ROWS));
@@ -82,16 +88,21 @@ public class RequestProcessor {
         }
     }
 
+    private void processLoadUsers(Request request, Response response) {
+        response.setParameter(ServerConstants.LIST_USERS, owner.getServerManager().getUsers().getListOfUsers());
+    }
+
     private void processAdministrativeRequest(Request request, Response response) {
         String state = (String) request.getParameter(ServerConstants.CLIENT_STATE);
         if (state != null && state.equals("DISCONNECT")) {
             String userAddress = owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
             owner.getServerManager().getUsers().removeUser(userAddress);
             LOGGER.info("User with address {} has been disconnected.", userAddress);
+            owner.getServerManager().broadcastUserNames();
         }
     }
 
-    private void unrecognizedMessageType(Response response) {
+    private void processUnrecognizedMessageType(Response response) {
         response.setParameter(ServerConstants.TYPE, MessageType.ADMINISTRATIVE);
         response.setParameter(ServerConstants.MESSAGE, "Can't recognise your request! Check the guide to provide readable request");
     }

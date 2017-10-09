@@ -11,6 +11,7 @@ import com.dotsandboxes.ServerConstants;
 import com.dotsandboxes.server.ServerManager;
 import com.dotsandboxes.server.threads.communication.RequestThread;
 import com.dotsandboxes.server.threads.communication.ResponseThread;
+import com.dotsandboxes.shared.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,12 +89,20 @@ public class ServerThread extends Thread {
         }
     }
 
+    @Deprecated
     public static List<Thread> getCommunicationRequestThreads() {
         return communicationRequestThreads;
     }
 
+    @Deprecated
     public static List<Thread> getCommunicationResponseThreads() {
         return communicationResponseThreads;
+    }
+
+    public static void broadcastResponse(Response response) {
+        for (Thread thread : ServerThread.getCommunicationResponseThreads()) {
+            ((ResponseThread) thread).sendResponse(response);
+        }
     }
 
 }

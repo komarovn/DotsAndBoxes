@@ -11,11 +11,14 @@ import com.dotsandboxes.ServerConstants;
 import com.dotsandboxes.server.model.GameModel;
 import com.dotsandboxes.server.model.UsersModel;
 import com.dotsandboxes.server.threads.ServerThread;
-import com.dotsandboxes.server.threads.communication.ResponseThread;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServerManager {
+
+    private Logger LOGGER = LoggerFactory.getLogger(ServerManager.class);
     private UsersModel users;
     private GameModel gameModel;
 
@@ -39,8 +42,19 @@ public class ServerManager {
         Response response = new Response();
         response.setParameter(ServerConstants.TYPE, MessageType.LOGIN);
         response.setParameter(ServerConstants.IS_GAME_CREATED, true);
-        for (Thread thread : ServerThread.getCommunicationResponseThreads()) {
-            ((ResponseThread) thread).sendResponse(response);
-        }
+        ServerThread.broadcastResponse(response);
+        LOGGER.debug("A notification about game was created was sent to all users.");
+    }
+
+    /**
+     * When a new user connected or one of existing users deisconnected, server
+     * sends an updated list of user names
+     */
+    public void broadcastUserNames() {
+        Response response = new Response();
+        response.setParameter(ServerConstants.TYPE, MessageType.LOAD_USERS);
+        response.setParameter(ServerConstants.LIST_USERS, getUsers().getListOfUsers());
+        ServerThread.broadcastResponse(response);
+        LOGGER.debug("User names list was sent to all active users.");
     }
 }
