@@ -14,7 +14,7 @@ public class Response implements Serializable {
     private HashMap<String, Object> data;
 
     public Response() {
-        data = new HashMap<>();
+        this.data = new HashMap<>();
     }
 
     public void setParameter(String key, Object value) {

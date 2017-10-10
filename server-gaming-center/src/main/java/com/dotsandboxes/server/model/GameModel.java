@@ -8,8 +8,18 @@
 package com.dotsandboxes.server.model;
 
 public class GameModel {
+    private UsersModel users;
+
     private Integer rows;
     private Integer columns;
+
+    public GameModel(UsersModel users) {
+        this.users = users;
+    }
+
+    public UsersModel getUsers() {
+        return users;
+    }
 
     public void setRows(Integer rows) {
         this.rows = rows;
@@ -21,5 +31,9 @@ public class GameModel {
 
     public boolean isGameCreated() {
         return rows != null && columns != null;
+    }
+
+    public void addEdge(int leftPoint, int rightPoint, String user) {
+
     }
 }

@@ -13,9 +13,11 @@ import java.util.HashMap;
 public class Request implements Serializable {
 
     private HashMap<String, Object> data;
+    private MessageType type;
 
-    public Request() {
-        data = new HashMap<>();
+    public Request(MessageType type) {
+        this.type = type;
+        this.data = new HashMap<>();
     }
 
     public void setParameter(String key, Object value) {
@@ -24,6 +26,10 @@ public class Request implements Serializable {
 
     public Object getParameter(String key) {
         return data.get(key);
+    }
+
+    public MessageType getType() {
+        return type;
     }
 
     @Override

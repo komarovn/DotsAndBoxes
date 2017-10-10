@@ -81,8 +81,7 @@ public class LoginController implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 if (isConnected) {
-                    Request request = new Request();
-                    request.setParameter(ClientConstants.TYPE, MessageType.ADMINISTRATIVE);
+                    Request request = new Request(MessageType.ADMINISTRATIVE);
                     request.setParameter(ClientConstants.CLIENT_STATE, "DISCONNECT");
                     requestListener.sendRequest(request);
                 }
@@ -142,9 +141,9 @@ public class LoginController implements Initializable {
 
     private void onPlayAction() {
         if (!userNameTextfield.getText().isEmpty()) {
-            Request request = new Request();
+            Request request = new Request(MessageType.LOGIN);
             statusLabel.setVisible(false);
-            request.setParameter(ClientConstants.TYPE, MessageType.LOGIN);
+
             if (rowsNumberTextBox.isVisible()) {
                 if (rowsNumberTextBox.getText().isEmpty() || colsNumberTextBox.getText().isEmpty()) {
                     statusLabel.setText(FILL_ALL_FIELDS);
@@ -155,6 +154,7 @@ public class LoginController implements Initializable {
                     request.setParameter(ClientConstants.BOARD_SIZE_COLUMNS, colsNumberTextBox.getText());
                 }
             }
+
             request.setParameter(ClientConstants.USER_NAME, userNameTextfield.getText());
             requestListener.sendRequest(request);
         }

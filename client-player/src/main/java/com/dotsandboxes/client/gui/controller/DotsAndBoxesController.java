@@ -7,8 +7,11 @@
  */
 package com.dotsandboxes.client.gui.controller;
 
+import com.dotsandboxes.ClientConstants;
 import com.dotsandboxes.client.listeners.RequestListener;
 import com.dotsandboxes.client.gui.DotsAndBoxes;
+import com.dotsandboxes.shared.MessageType;
+import com.dotsandboxes.shared.Request;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -58,5 +61,12 @@ public class DotsAndBoxesController implements Initializable {
         for (String name : names) {
             this.users.add(createUserLabel(name));
         }
+    }
+
+    public void createNewEdge(int leftPoint, int rightPoint) {
+        Request request = new Request(MessageType.CREATE_EDGE);
+        request.setParameter(ClientConstants.LEFT_POINT, leftPoint);
+        request.setParameter(ClientConstants.RIGHT_POINT, rightPoint);
+        requestListener.sendRequest(request);
     }
 }

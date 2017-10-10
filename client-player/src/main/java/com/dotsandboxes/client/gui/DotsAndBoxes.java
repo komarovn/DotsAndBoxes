@@ -85,8 +85,7 @@ public class DotsAndBoxes extends Application {
             @Override
             public void handle(WindowEvent event) {
                 if (tcpClient.getClientSocket() != null && !tcpClient.getClientSocket().isClosed()) {
-                    Request request = new Request();
-                    request.setParameter(ClientConstants.TYPE, MessageType.ADMINISTRATIVE);
+                    Request request = new Request(MessageType.ADMINISTRATIVE);
                     request.setParameter(ClientConstants.CLIENT_STATE, "DISCONNECT");
                     requestThread.sendRequest(request);
                 }
@@ -98,9 +97,7 @@ public class DotsAndBoxes extends Application {
     }
 
     private void sendInitialRequest() {
-        Request request = new Request();
-        request.setParameter(ClientConstants.TYPE, MessageType.TRY_CONNECT);
-        requestThread.sendRequest(request);
+        requestThread.sendRequest(new Request(MessageType.TRY_CONNECT));
     }
 
     public void openMainFrame(String userName) {
@@ -127,8 +124,6 @@ public class DotsAndBoxes extends Application {
     }
 
     private void loadUsersData() {
-        Request request = new Request();
-        request.setParameter(ClientConstants.TYPE, MessageType.LOAD_USERS);
-        requestThread.sendRequest(request);
+        requestThread.sendRequest(new Request(MessageType.LOAD_USERS));
     }
 }

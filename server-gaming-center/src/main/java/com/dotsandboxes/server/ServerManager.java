@@ -19,16 +19,14 @@ import org.slf4j.LoggerFactory;
 public class ServerManager {
 
     private Logger LOGGER = LoggerFactory.getLogger(ServerManager.class);
-    private UsersModel users;
     private GameModel gameModel;
 
     public ServerManager() {
-        this.users = new UsersModel();
-        this.gameModel = new GameModel();
+        this.gameModel = new GameModel(new UsersModel());
     }
 
     public UsersModel getUsers() {
-        return users;
+        return gameModel.getUsers();
     }
 
     public GameModel getGameModel() {

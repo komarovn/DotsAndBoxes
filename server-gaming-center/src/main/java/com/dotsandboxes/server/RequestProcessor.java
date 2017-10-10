@@ -28,37 +28,32 @@ public class RequestProcessor {
     }
 
     public void process(Request request, Response response) {
-        MessageType type = (MessageType) request.getParameter(ServerConstants.TYPE);
-        if (type != null) {
-            switch (type) {
-                case TRY_CONNECT:
-                    processTryConnect(request, response);
-                    response.setParameter(ServerConstants.TYPE, MessageType.TRY_CONNECT);
-                    break;
-                case LOGIN:
-                    processLogin(request, response);
-                    response.setParameter(ServerConstants.TYPE, MessageType.LOGIN);
-                    break;
-                case LOAD_USERS:
-                    processLoadUsers(request, response);
-                    response.setParameter(ServerConstants.TYPE, MessageType.LOAD_USERS);
-                    break;
-                case CREATE_EDGE:
-                    processCreateEdge(request, response);
-                    break;
-                case UPDATE_STATE:
-                    break;
-                case GAME_OVER:
-                    break;
-                case ADMINISTRATIVE:
-                    processAdministrativeRequest(request, response);
-                    response.setParameter(ServerConstants.TYPE, MessageType.ADMINISTRATIVE);
-                    break;
-                default:
-                    processUnrecognizedMessageType(response);
-            }
-        } else {
-            nullMessageType(response);
+        switch (request.getType()) {
+            case TRY_CONNECT:
+                processTryConnect(request, response);
+                response.setParameter(ServerConstants.TYPE, MessageType.TRY_CONNECT);
+                break;
+            case LOGIN:
+                processLogin(request, response);
+                response.setParameter(ServerConstants.TYPE, MessageType.LOGIN);
+                break;
+            case LOAD_USERS:
+                processLoadUsers(request, response);
+                response.setParameter(ServerConstants.TYPE, MessageType.LOAD_USERS);
+                break;
+            case CREATE_EDGE:
+                processCreateEdge(request, response);
+                break;
+            case UPDATE_STATE:
+                break;
+            case GAME_OVER:
+                break;
+            case ADMINISTRATIVE:
+                processAdministrativeRequest(request, response);
+                response.setParameter(ServerConstants.TYPE, MessageType.ADMINISTRATIVE);
+                break;
+            default:
+                processUnrecognizedMessageType(response);
         }
     }
 
@@ -72,7 +67,7 @@ public class RequestProcessor {
 
     private void processLogin(Request request, Response response) {
         try {
-            String userAddress = owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
+            String userAddress = getUserAddress();
             String userName = (String) request.getParameter(ServerConstants.USER_NAME);
             owner.getServerManager().getUsers().addUser(userAddress, userName);
 
@@ -102,15 +97,22 @@ public class RequestProcessor {
     private void processAdministrativeRequest(Request request, Response response) {
         String state = (String) request.getParameter(ServerConstants.CLIENT_STATE);
         if (state != null && state.equals("DISCONNECT")) {
-            String userAddress = owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
+            String userAddress = getUserAddress();
             owner.getServerManager().getUsers().removeUser(userAddress);
             LOGGER.info("User with address {} has been disconnected.", userAddress);
             owner.getServerManager().broadcastUserNames();
         }
     }
 
-    private void processCreateEdge(Request request, Response response) {
+    private String getUserAddress() {
+        return owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
+    }
 
+    private void processCreateEdge(Request request, Response response) {
+        String sender = getUserAddress();
+        int leftPoint = (int) request.getParameter(ServerConstants.LEFT_POINT);
+        int rightPoint = (int) request.getParameter(ServerConstants.RIGHT_POINT);
+        owner.getServerManager().getGameModel().addEdge(leftPoint, rightPoint, sender);
     }
 
     private void processUnrecognizedMessageType(Response response) {
