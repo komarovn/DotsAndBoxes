@@ -64,7 +64,7 @@ public class RequestProcessor {
     private void processTryConnect(Request request, Response response) {
         String userAddress =  owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
         LOGGER.info("Established connection: {}", userAddress);
-        response.setParameter(ServerConstants.IS_FIRST_CLIENT, !owner.getServerManager().getUsers().isAnyUsers());
+        response.setParameter(ServerConstants.IS_FIRST_CLIENT, !owner.getServerManager().isAnyConnections());
         response.setParameter(ServerConstants.IS_GAME_CREATED, owner.getServerManager().getGameModel().isGameCreated());
         owner.getServerManager().getUsers().addUser(userAddress, null);
     }
@@ -96,11 +96,13 @@ public class RequestProcessor {
 
     private void processLoadUsers(Request request, Response response) {
         response.setParameter(ServerConstants.LIST_USERS, owner.getServerManager().getUsers().getListOfUsers());
+        response.setParameter(ServerConstants.CURRENT_PLAYER, owner.getServerManager().getGameModel().getUsers().getCurrentPlayer());
     }
 
     private void processGameSettings(Request request, Response response) {
         response.setParameter(ServerConstants.BOARD_SIZE_ROWS, owner.getServerManager().getGameModel().getRows());
         response.setParameter(ServerConstants.BOARD_SIZE_COLUMNS, owner.getServerManager().getGameModel().getColumns());
+        response.setParameter(ServerConstants.CURRENT_PLAYER, owner.getServerManager().getGameModel().getUsers().getCurrentPlayer());
     }
 
     private void processAdministrativeRequest(Request request, Response response) {
@@ -112,7 +114,7 @@ public class RequestProcessor {
             LOGGER.info("User with address {} has been disconnected.", userAddress);
             owner.getServerManager().broadcastUserNames();
 
-            if (!owner.getServerManager().getUsers().isAnyUsers()) {
+            if (!owner.getServerManager().isAnyConnections()) {
                 owner.getServerManager().getGameModel().destroy();
                 LOGGER.info("All users are left. Game was destroyed.");
             }

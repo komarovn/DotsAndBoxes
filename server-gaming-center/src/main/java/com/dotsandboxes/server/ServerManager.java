@@ -34,6 +34,14 @@ public class ServerManager {
     }
 
     /**
+     * Check for any connection to server.
+     * @return {@code true} if there is at least one connection to server and {@code false} otherwise.
+     */
+    public boolean isAnyConnections() {
+        return !getUsers().isEmptyUsers();
+    }
+
+    /**
      * Send a notification to those users which are waiting for game's creation.
      */
     public void sendNotificationGameCreated() {
@@ -45,13 +53,14 @@ public class ServerManager {
     }
 
     /**
-     * When a new user connected or one of existing users deisconnected, server
+     * When a new user connected or one of existing users disconnected, server
      * sends an updated list of user names
      */
     public void broadcastUserNames() {
         Response response = new Response();
         response.setParameter(ServerConstants.TYPE, MessageType.LOAD_USERS);
         response.setParameter(ServerConstants.LIST_USERS, getUsers().getListOfUsers());
+        response.setParameter(ServerConstants.CURRENT_PLAYER, getGameModel().getUsers().getCurrentPlayer());
         ServerThread.broadcastResponse(response);
         LOGGER.debug("User names list was sent to all active users.");
     }

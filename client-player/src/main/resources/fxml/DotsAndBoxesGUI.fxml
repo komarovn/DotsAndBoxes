@@ -33,6 +33,11 @@
                               <Insets bottom="8.0" left="16.0" top="16.0" />
                            </VBox.margin>
                         </Label>
+                         <Label alignment="TOP_LEFT" text="">
+                             <font>
+                                 <Font name="GothamPro-Medium" size="0" />
+                             </font>
+                         </Label>
                         <VBox fx:id="usersPane" prefHeight="200.0" prefWidth="100.0" />
                      </children>
                   </VBox>

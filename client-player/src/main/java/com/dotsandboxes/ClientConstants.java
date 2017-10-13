@@ -19,6 +19,7 @@ public abstract class ClientConstants {
     public static final String IS_FIRST_CLIENT = "isFirstClient";
     public static final String USER_NAME = "userName";
     public static final String LIST_USERS = "listOfUsers";
+    public static final String CURRENT_PLAYER = "currentPlayer";
     public static final String LEFT_POINT = "leftPoint";
     public static final String RIGHT_POINT = "rightPoint";
     public static final String CLIENT_STATE = "clientState";

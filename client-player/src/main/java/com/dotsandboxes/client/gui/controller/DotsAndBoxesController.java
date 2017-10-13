@@ -10,6 +10,7 @@ package com.dotsandboxes.client.gui.controller;
 import com.dotsandboxes.ClientConstants;
 import com.dotsandboxes.client.listeners.RequestListener;
 import com.dotsandboxes.client.gui.DotsAndBoxes;
+import com.dotsandboxes.client.util.ColorUtil;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
 import javafx.collections.ObservableList;
@@ -21,15 +22,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DotsAndBoxesController implements Initializable {
     private final String REGULAR_FONT = "GothamPro-Light";
@@ -38,8 +35,9 @@ public class DotsAndBoxesController implements Initializable {
     private DotsAndBoxes mainApp;
     private String currentUser;
     private RequestListener requestListener;
+    private boolean isMyMove = false;
 
-    private List<Label> users = new ArrayList<Label>();
+    private Map<Label, String> users = new HashMap<Label, String>();
 
     @FXML
     private VBox usersPane;
@@ -72,10 +70,17 @@ public class DotsAndBoxesController implements Initializable {
     }
 
     public void loadUsersData(List<String> names) {
-        usersPane.getChildren().removeAll(users);
+        usersPane.getChildren().removeAll(users.keySet());
         this.users.clear();
         for (String name : names) {
-            this.users.add(createUserLabel(name));
+            this.users.put(createUserLabel(name), ColorUtil.getNextColor());
+        }
+    }
+
+    public void setCurrentPlayer(String playerName) {
+        isMyMove = currentUser.equals(playerName);
+        for (Label user : users.keySet()) {
+            user.setFont(user.getText().equals(playerName) ? Font.font(MEDIUM_FONT) : Font.font(REGULAR_FONT));
         }
     }
 
@@ -124,6 +129,7 @@ public class DotsAndBoxesController implements Initializable {
     private Pane createBox() {
         Pane box = new Pane();
         box.getStyleClass().add("box-panel");
+        //box.setStyle("-fx-background-color: " + ColorUtil.getNextColor());
         return box;
     }
 

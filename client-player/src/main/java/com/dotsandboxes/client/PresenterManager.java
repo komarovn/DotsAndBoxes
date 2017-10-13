@@ -86,13 +86,17 @@ public class PresenterManager<Controller> implements ResponseListener {
 
     private void processLoadUsers(Response response) {
         List<String> names = (List<String>) response.getParameter(ClientConstants.LIST_USERS);
+        String currentPlayer = (String) response.getParameter(ClientConstants.CURRENT_PLAYER);
         ((DotsAndBoxesController) controller).loadUsersData(names);
+        ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
     }
 
     private void processGameSettings(Response response) {
         int rows = (int) response.getParameter(ClientConstants.BOARD_SIZE_ROWS);
         int cols = (int) response.getParameter(ClientConstants.BOARD_SIZE_COLUMNS);
+        String currentPlayer = (String) response.getParameter(ClientConstants.CURRENT_PLAYER);
         ((DotsAndBoxesController) controller).initBoard(rows, cols);
+        ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
     }
 
     private void processUpdateBoard(Response response) {
