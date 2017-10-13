@@ -110,6 +110,7 @@ public class DotsAndBoxes extends Application {
             controller.setUserName(userName);
 
             loadUsersData();
+            loadGameSettings();
 
             PresenterManager<DotsAndBoxesController> presenterManager = new PresenterManager<>();
             presenterManager.setController(controller);
@@ -125,5 +126,9 @@ public class DotsAndBoxes extends Application {
 
     private void loadUsersData() {
         requestThread.sendRequest(new Request(MessageType.LOAD_USERS));
+    }
+
+    private void loadGameSettings() {
+        requestThread.sendRequest(new Request(MessageType.GAME_SETTINGS));
     }
 }

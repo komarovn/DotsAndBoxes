@@ -12,14 +12,17 @@ import com.dotsandboxes.client.listeners.RequestListener;
 import com.dotsandboxes.client.gui.DotsAndBoxes;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
@@ -46,7 +49,6 @@ public class DotsAndBoxesController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        board.add(createDot(), 1, 2);
     }
 
     public void setMainApp(DotsAndBoxes mainApp) {
@@ -77,6 +79,22 @@ public class DotsAndBoxesController implements Initializable {
         }
     }
 
+    public void initBoard(int rows, int cols) {
+        for (int i = 0; i <= 2 * cols; i++) {
+            for (int j = 0; j <= 2 * rows; j++) {
+                if (i % 2 == 0 && j % 2 == 0) {
+                    board.add(createDot(), i, j);
+                } else if (i % 2 == 1 && j % 2 == 0) {
+                    board.add(createHorizontalEdge(), i, j);
+                } else if (i % 2 == 0 && j % 2 == 1) {
+                    board.add(createVerticalEdge(), i, j);
+                } else {
+                    board.add(createBox(), i, j);
+                }
+            }
+        }
+    }
+
     public void createNewEdge(int leftPoint, int rightPoint) {
         Request request = new Request(MessageType.CREATE_EDGE);
         request.setParameter(ClientConstants.LEFT_POINT, leftPoint);
@@ -86,12 +104,7 @@ public class DotsAndBoxesController implements Initializable {
 
     private ToggleButton createDot() {
         ToggleButton dot = new ToggleButton("");
-        dot.setStyle("-fx-background-radius: 5em; " +
-                "-fx-min-width: 16px; " +
-                "-fx-min-height: 16px; " +
-                "-fx-max-width: 16px; " +
-                "-fx-max-height: 16px;" +
-                "-fx-background-color: lightpink");
+        dot.getStyleClass().add("dot-button");
         addDotListener(dot);
         return dot;
     }
@@ -100,8 +113,80 @@ public class DotsAndBoxesController implements Initializable {
         dot.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                dot.isSelected();
+                if (dot.isSelected()) {
+                    Coordinate coordinate = getCoordinatesOfElement(dot);
+
+                }
             }
         });
+    }
+
+    private Pane createBox() {
+        Pane box = new Pane();
+        box.getStyleClass().add("box-panel");
+        return box;
+    }
+
+    private Pane createVerticalEdge() {
+        Pane vedge = new Pane();
+        vedge.getStyleClass().add("edge-v-panel");
+        return vedge;
+    }
+
+    private Pane createHorizontalEdge() {
+        Pane hedge = new Pane();
+        hedge.getStyleClass().add("edge-h-panel");
+        return hedge;
+    }
+
+    private Coordinate getCoordinatesOfElement(Node element) {
+        Coordinate coordinate = new Coordinate();
+        coordinate.y = board.getRowIndex(element);
+        coordinate.x = board.getColumnIndex(element);
+        return coordinate;
+    }
+
+    private void unlockNeighbors(Coordinate currentPosition) {
+        List<Node> neighbors = new ArrayList<Node>();
+        ObservableList<Node> childs = board.getChildren();
+
+        for (Node child : childs) {
+            int x = board.getColumnIndex(child);
+            int y = board.getRowIndex(child);
+            if ((x == currentPosition.getX() + 2 || x == currentPosition.getX() - 2) &&
+                    (y == currentPosition.getY() + 2 || y == currentPosition.getY() - 2)) {
+                neighbors.add(child);
+            }
+        }
+
+        for (Node node : neighbors) {
+            if (node instanceof ToggleButton) {
+                if (!node.isDisabled()) {
+
+                }
+            }
+        }
+    }
+
+    private void lockAllDots() {
+        ObservableList<Node> childs = board.getChildren();
+        for (Node child : childs) {
+            if (child instanceof ToggleButton) {
+                child.setDisable(true);
+            }
+        }
+    }
+
+    private class Coordinate {
+        int x;
+        int y;
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
     }
 }

@@ -12,6 +12,7 @@ public enum MessageType {
     LOGIN,
     TRY_CONNECT,
     LOAD_USERS,
+    GAME_SETTINGS,
     CREATE_EDGE,
     UPDATE_STATE,
     GAME_OVER

@@ -29,11 +29,24 @@ public class GameModel {
         this.columns = columns;
     }
 
+    public Integer getRows() {
+        return rows;
+    }
+
+    public Integer getColumns() {
+        return columns;
+    }
+
     public boolean isGameCreated() {
         return rows != null && columns != null;
     }
 
     public void addEdge(int leftPoint, int rightPoint, String user) {
 
+    }
+
+    public void destroy() {
+        this.rows = null;
+        this.columns = null;
     }
 }

@@ -41,6 +41,10 @@ public class RequestProcessor {
                 processLoadUsers(request, response);
                 response.setParameter(ServerConstants.TYPE, MessageType.LOAD_USERS);
                 break;
+            case GAME_SETTINGS:
+                processGameSettings(request, response);
+                response.setParameter(ServerConstants.TYPE, MessageType.GAME_SETTINGS);
+                break;
             case CREATE_EDGE:
                 processCreateEdge(request, response);
                 break;
@@ -94,13 +98,24 @@ public class RequestProcessor {
         response.setParameter(ServerConstants.LIST_USERS, owner.getServerManager().getUsers().getListOfUsers());
     }
 
+    private void processGameSettings(Request request, Response response) {
+        response.setParameter(ServerConstants.BOARD_SIZE_ROWS, owner.getServerManager().getGameModel().getRows());
+        response.setParameter(ServerConstants.BOARD_SIZE_COLUMNS, owner.getServerManager().getGameModel().getColumns());
+    }
+
     private void processAdministrativeRequest(Request request, Response response) {
         String state = (String) request.getParameter(ServerConstants.CLIENT_STATE);
+
         if (state != null && state.equals("DISCONNECT")) {
             String userAddress = getUserAddress();
             owner.getServerManager().getUsers().removeUser(userAddress);
             LOGGER.info("User with address {} has been disconnected.", userAddress);
             owner.getServerManager().broadcastUserNames();
+
+            if (!owner.getServerManager().getUsers().isAnyUsers()) {
+                owner.getServerManager().getGameModel().destroy();
+                LOGGER.info("All users are left. Game was destroyed.");
+            }
         }
     }
 

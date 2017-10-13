@@ -41,6 +41,11 @@ public class PresenterManager<Controller> implements ResponseListener {
                         processLoadUsers(response);
                     }
                     break;
+                case GAME_SETTINGS:
+                    if (controller instanceof DotsAndBoxesController) {
+                        processGameSettings(response);
+                    }
+                    break;
                 case UPDATE_STATE:
                     processUpdateBoard(response);
                     break;
@@ -82,6 +87,12 @@ public class PresenterManager<Controller> implements ResponseListener {
     private void processLoadUsers(Response response) {
         List<String> names = (List<String>) response.getParameter(ClientConstants.LIST_USERS);
         ((DotsAndBoxesController) controller).loadUsersData(names);
+    }
+
+    private void processGameSettings(Response response) {
+        int rows = (int) response.getParameter(ClientConstants.BOARD_SIZE_ROWS);
+        int cols = (int) response.getParameter(ClientConstants.BOARD_SIZE_COLUMNS);
+        ((DotsAndBoxesController) controller).initBoard(rows, cols);
     }
 
     private void processUpdateBoard(Response response) {

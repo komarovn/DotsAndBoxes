@@ -1,0 +1,38 @@
+.dot-button {
+    -fx-background-radius: 5em;
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    -fx-background-color: lightpink
+}
+
+.dot-button:selected {
+    -fx-background-color: coral;
+}
+
+.box-panel {
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-max-width: 48px;
+    -fx-max-height: 48px;
+    -fx-background-color: beige;
+}
+
+.edge-h-panel {
+    -fx-background-radius: 5em;
+    -fx-min-width: 48px;
+    -fx-min-height: 16px;
+    -fx-max-width: 48px;
+    -fx-max-height: 16px;
+    -fx-background-color: aqua;
+}
+
+.edge-v-panel {
+    -fx-background-radius: 5em;
+    -fx-min-width: 16px;
+    -fx-min-height: 48px;
+    -fx-max-width: 16px;
+    -fx-max-height: 48px;
+    -fx-background-color: aqua;
+}
