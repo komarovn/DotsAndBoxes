@@ -76,6 +76,19 @@ public class UsersModel {
         return names;
     }
 
+    public String getUserAddressByName(String name) {
+        for (Map.Entry<String, String> entry : users.entrySet()) {
+            if (entry.getValue() != null && entry.getValue().equals(name)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
+    public String getUserNameByAddress(String address) {
+        return users.get(address);
+    }
+
     public String getCurrentPlayer() {
         return users.get(currentPlayer);
     }

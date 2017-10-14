@@ -80,8 +80,7 @@ public class RequestProcessor {
             if (!owner.getServerManager().getGameModel().isGameCreated()) {
                 int rowsNumber = Integer.parseInt((String) request.getParameter(ServerConstants.BOARD_SIZE_ROWS));
                 int colsNumber = Integer.parseInt((String) request.getParameter(ServerConstants.BOARD_SIZE_COLUMNS));
-                owner.getServerManager().getGameModel().setRows(rowsNumber);
-                owner.getServerManager().getGameModel().setColumns(colsNumber);
+                owner.getServerManager().getGameModel().initGame(rowsNumber, colsNumber);
                 LOGGER.info("Game with board size {} by {} was created!", rowsNumber, colsNumber);
                 owner.getServerManager().sendNotificationGameCreated();
             }
@@ -103,6 +102,9 @@ public class RequestProcessor {
         response.setParameter(ServerConstants.BOARD_SIZE_ROWS, owner.getServerManager().getGameModel().getRows());
         response.setParameter(ServerConstants.BOARD_SIZE_COLUMNS, owner.getServerManager().getGameModel().getColumns());
         response.setParameter(ServerConstants.CURRENT_PLAYER, owner.getServerManager().getGameModel().getUsers().getCurrentPlayer());
+        response.setParameter(ServerConstants.MODEL_BOXES, owner.getServerManager().getGameModel().getBoxes());
+        response.setParameter(ServerConstants.MODEL_EDGES, owner.getServerManager().getGameModel().getEdges());
+        response.setParameter(ServerConstants.MODEL_DOTS, owner.getServerManager().getGameModel().getDots());
     }
 
     private void processAdministrativeRequest(Request request, Response response) {
@@ -130,6 +132,7 @@ public class RequestProcessor {
         int leftPoint = (int) request.getParameter(ServerConstants.LEFT_POINT);
         int rightPoint = (int) request.getParameter(ServerConstants.RIGHT_POINT);
         owner.getServerManager().getGameModel().addEdge(leftPoint, rightPoint, sender);
+        owner.getServerManager().broadcastModelUpdate();
     }
 
     private void processUnrecognizedMessageType(Response response) {

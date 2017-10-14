@@ -64,4 +64,18 @@ public class ServerManager {
         ServerThread.broadcastResponse(response);
         LOGGER.debug("User names list was sent to all active users.");
     }
+
+    /**
+     * Update gaming board for all active users when some event was fired.
+     */
+    public void broadcastModelUpdate() {
+        Response response = new Response();
+        response.setParameter(ServerConstants.TYPE, MessageType.UPDATE_STATE);
+        response.setParameter(ServerConstants.CURRENT_PLAYER, getGameModel().getUsers().getCurrentPlayer());
+        response.setParameter(ServerConstants.MODEL_BOXES, getGameModel().getBoxes());
+        response.setParameter(ServerConstants.MODEL_EDGES, getGameModel().getEdges());
+        response.setParameter(ServerConstants.MODEL_DOTS, getGameModel().getDots());
+        ServerThread.broadcastResponse(response);
+        LOGGER.debug("Update model for all active users was processed.");
+    }
 }

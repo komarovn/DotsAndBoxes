@@ -95,11 +95,19 @@ public class PresenterManager<Controller> implements ResponseListener {
         int rows = (int) response.getParameter(ClientConstants.BOARD_SIZE_ROWS);
         int cols = (int) response.getParameter(ClientConstants.BOARD_SIZE_COLUMNS);
         String currentPlayer = (String) response.getParameter(ClientConstants.CURRENT_PLAYER);
+
         ((DotsAndBoxesController) controller).initBoard(rows, cols);
         ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
     }
 
     private void processUpdateBoard(Response response) {
+        String currentPlayer = (String) response.getParameter(ClientConstants.CURRENT_PLAYER);
+        List<String> boxes = (List<String>) response.getParameter(ClientConstants.MODEL_BOXES);
+        List<Boolean> edges = (List<Boolean>) response.getParameter(ClientConstants.MODEL_EDGES);
+        List<Boolean> dots = (List<Boolean>) response.getParameter(ClientConstants.MODEL_DOTS);
+
+        ((DotsAndBoxesController) controller).updateBoard(dots, edges, boxes);
+        ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
     }
 
     private void processGameOver(Response response) {

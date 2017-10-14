@@ -100,6 +100,10 @@ public class DotsAndBoxesController implements Initializable {
         }
     }
 
+    public void updateBoard(List<Boolean> dots, List<Boolean> edges, List<String> boxes) {
+
+    }
+
     public void createNewEdge(int leftPoint, int rightPoint) {
         Request request = new Request(MessageType.CREATE_EDGE);
         request.setParameter(ClientConstants.LEFT_POINT, leftPoint);
@@ -129,8 +133,11 @@ public class DotsAndBoxesController implements Initializable {
     private Pane createBox() {
         Pane box = new Pane();
         box.getStyleClass().add("box-panel");
-        //box.setStyle("-fx-background-color: " + ColorUtil.getNextColor());
         return box;
+    }
+
+    private void colorBox(Pane box, String color) {
+        box.setStyle("-fx-background-color: " + color);
     }
 
     private Pane createVerticalEdge() {
