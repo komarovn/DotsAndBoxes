@@ -116,7 +116,7 @@ public class DotsAndBoxesController implements Initializable {
                 if (i % 2 == 0 && j % 2 == 0) {
                     ToggleButton dot = (ToggleButton) getBoardElement(j, i);
                     dot.setSelected(false);
-                    dot.setDisable(!(Boolean) gameModel.get(index));
+                    dot.setDisable(!isMyMove || !(Boolean) gameModel.get(index));
                 } else if (i % 2 == 1 && j % 2 == 1) {
                     Pane box = (Pane) getBoardElement(j, i);
                     String playerName = (String) gameModel.get(index);
@@ -177,11 +177,14 @@ public class DotsAndBoxesController implements Initializable {
                         Coordinate coordinate = getCoordinatesOfElement(dot);
                         int rightDot = coordinate.getX() / 2 + (cols + 1) * coordinate.getY() / 2;
                         createNewEdge(leftDot, rightDot);
+                    } else {
+                        updateBoard(gameModel);
                     }
                     leftDot = null;
                 } else if (dot.isSelected()) {
                     Coordinate coordinate = getCoordinatesOfElement(dot);
                     leftDot = coordinate.getX() / 2 + (cols + 1) * coordinate.getY() / 2;
+                    lockNotNeighborDots(coordinate);
                 }
             }
         });
@@ -216,32 +219,20 @@ public class DotsAndBoxesController implements Initializable {
         return coordinate;
     }
 
-    private void unlockNeighbors(Coordinate currentPosition) {
-        List<Node> neighbors = new ArrayList<Node>();
-        ObservableList<Node> childs = board.getChildren();
+    private void lockNotNeighborDots(Coordinate dotCoordinates) {
+        List<ToggleButton> neighbors = new ArrayList<ToggleButton>();
+        ToggleButton leftNeighbor = (ToggleButton) getBoardElement(dotCoordinates.getY(), dotCoordinates.getX() - 2);
+        ToggleButton rightNeighbor = (ToggleButton) getBoardElement(dotCoordinates.getY(), dotCoordinates.getX() + 2);
+        ToggleButton topNeighbor = (ToggleButton) getBoardElement(dotCoordinates.getY() - 2, dotCoordinates.getX());
+        ToggleButton bottomNeighbor = (ToggleButton) getBoardElement(dotCoordinates.getY() + 2, dotCoordinates.getX());
+        neighbors.add(leftNeighbor);
+        neighbors.add(rightNeighbor);
+        neighbors.add(topNeighbor);
+        neighbors.add(bottomNeighbor);
+        neighbors.add((ToggleButton) getBoardElement(dotCoordinates.getY(), dotCoordinates.getX()));
 
-        for (Node child : childs) {
-            int x = board.getColumnIndex(child);
-            int y = board.getRowIndex(child);
-            if ((x == currentPosition.getX() + 2 || x == currentPosition.getX() - 2) &&
-                    (y == currentPosition.getY() + 2 || y == currentPosition.getY() - 2)) {
-                neighbors.add(child);
-            }
-        }
-
-        for (Node node : neighbors) {
-            if (node instanceof ToggleButton) {
-                if (!node.isDisabled()) {
-
-                }
-            }
-        }
-    }
-
-    private void lockAllDots() {
-        ObservableList<Node> childs = board.getChildren();
-        for (Node child : childs) {
-            if (child instanceof ToggleButton) {
+        for (Node child : board.getChildren()) {
+            if (child instanceof ToggleButton && !neighbors.contains(child)) {
                 child.setDisable(true);
             }
         }
