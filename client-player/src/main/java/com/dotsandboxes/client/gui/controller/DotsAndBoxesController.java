@@ -36,6 +36,10 @@ public class DotsAndBoxesController implements Initializable {
     private String currentUser;
     private RequestListener requestListener;
     private boolean isMyMove = false;
+    private List<Object> gameModel;
+    private Integer leftDot = null;
+    private Integer rows;
+    private Integer cols;
 
     private Map<Label, String> users = new HashMap<Label, String>();
 
@@ -85,6 +89,9 @@ public class DotsAndBoxesController implements Initializable {
     }
 
     public void initBoard(int rows, int cols) {
+        this.rows = rows;
+        this.cols = cols;
+
         for (int i = 0; i <= 2 * cols; i++) {
             for (int j = 0; j <= 2 * rows; j++) {
                 if (i % 2 == 0 && j % 2 == 0) {
@@ -100,8 +107,51 @@ public class DotsAndBoxesController implements Initializable {
         }
     }
 
-    public void updateBoard(List<Boolean> dots, List<Boolean> edges, List<String> boxes) {
+    public void updateBoard(List<Object> gameModel) {
+        this.gameModel = gameModel;
 
+        for (int i = 0; i <= 2 * cols; i++) {
+            for (int j = 0; j <= 2 * rows; j++) {
+                int index = i * (2 * rows + 1) + j;
+                if (i % 2 == 0 && j % 2 == 0) {
+                    ToggleButton dot = (ToggleButton) getBoardElement(j, i);
+                    dot.setSelected(false);
+                    dot.setDisable(!(Boolean) gameModel.get(index));
+                } else if (i % 2 == 1 && j % 2 == 1) {
+                    Pane box = (Pane) getBoardElement(j, i);
+                    String playerName = (String) gameModel.get(index);
+                    if (playerName != null) {
+                        colorBox(box, getUserColor(playerName));
+                    }
+                } else {
+                    Pane edge = (Pane) getBoardElement(j, i);
+                    edge.setDisable(!(Boolean) gameModel.get(index));
+                }
+            }
+        }
+    }
+
+    private String getUserColor(String name) {
+        for (Map.Entry<Label, String> entry : users.entrySet()) {
+            if (entry.getKey().getText().equals(name)) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
+
+    public Node getBoardElement(final int row, final int column) {
+        Node result = null;
+        ObservableList<Node> childs = board.getChildren();
+
+        for (Node child : childs) {
+            if (board.getRowIndex(child) == row && board.getColumnIndex(child) == column) {
+                result = child;
+                break;
+            }
+        }
+
+        return result;
     }
 
     public void createNewEdge(int leftPoint, int rightPoint) {
@@ -122,9 +172,16 @@ public class DotsAndBoxesController implements Initializable {
         dot.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if (dot.isSelected()) {
+                if (leftDot != null) {
+                    if (dot.isSelected()) {
+                        Coordinate coordinate = getCoordinatesOfElement(dot);
+                        int rightDot = coordinate.getX() / 2 + (cols + 1) * coordinate.getY() / 2;
+                        createNewEdge(leftDot, rightDot);
+                    }
+                    leftDot = null;
+                } else if (dot.isSelected()) {
                     Coordinate coordinate = getCoordinatesOfElement(dot);
-
+                    leftDot = coordinate.getX() / 2 + (cols + 1) * coordinate.getY() / 2;
                 }
             }
         });

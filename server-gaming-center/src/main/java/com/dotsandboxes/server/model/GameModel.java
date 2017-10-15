@@ -73,20 +73,51 @@ public class GameModel {
 
     }
 
+    @Deprecated
     public List<Boolean> getDots() {
         return dots;
     }
 
+    @Deprecated
     public List<Boolean> getEdges() {
         return edges;
     }
 
+    @Deprecated
     public List<String> getBoxes() {
         List<String> result = new ArrayList<String>();
         for (String address : boxes) {
             result.add(address == null ? null : getUsers().getUserNameByAddress(address));
         }
         return result;
+    }
+
+    /**
+     * Convert game's model to a single list for clients.
+     * @return a list of necessary objects for updating a gaming board on clients.
+     */
+    public List<Object> convert() {
+        List<Object> model = new ArrayList<Object>();
+        int boxesCounter = 0;
+        int dotsCounter = 0;
+        int edgesCounter = 0;
+
+        for (int i = 0; i <= 2 * columns; i++) {
+            for (int j = 0; j <= 2 * rows; j++) {
+                if (i % 2 == 0 && j % 2 == 0) {
+                    model.add(dots.get(dotsCounter));
+                    dotsCounter++;
+                } else if (i % 2 == 1 && j % 2 == 1) {
+                    model.add(boxes.get(boxesCounter));
+                    boxesCounter++;
+                } else {
+                    model.add(edges.get(edgesCounter));
+                    edgesCounter++;
+                }
+            }
+        }
+
+        return model;
     }
 
     public void destroy() {

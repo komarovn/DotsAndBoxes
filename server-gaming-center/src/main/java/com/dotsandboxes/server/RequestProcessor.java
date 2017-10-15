@@ -102,9 +102,9 @@ public class RequestProcessor {
         response.setParameter(ServerConstants.BOARD_SIZE_ROWS, owner.getServerManager().getGameModel().getRows());
         response.setParameter(ServerConstants.BOARD_SIZE_COLUMNS, owner.getServerManager().getGameModel().getColumns());
         response.setParameter(ServerConstants.CURRENT_PLAYER, owner.getServerManager().getGameModel().getUsers().getCurrentPlayer());
-        response.setParameter(ServerConstants.MODEL_BOXES, owner.getServerManager().getGameModel().getBoxes());
-        response.setParameter(ServerConstants.MODEL_EDGES, owner.getServerManager().getGameModel().getEdges());
-        response.setParameter(ServerConstants.MODEL_DOTS, owner.getServerManager().getGameModel().getDots());
+        //response.setParameter(ServerConstants.MODEL_BOXES, owner.getServerManager().getGameModel().getBoxes());
+        //response.setParameter(ServerConstants.MODEL_EDGES, owner.getServerManager().getGameModel().getEdges());
+        response.setParameter(ServerConstants.MODEL, owner.getServerManager().getGameModel().convert());
     }
 
     private void processAdministrativeRequest(Request request, Response response) {
@@ -132,6 +132,7 @@ public class RequestProcessor {
         int leftPoint = (int) request.getParameter(ServerConstants.LEFT_POINT);
         int rightPoint = (int) request.getParameter(ServerConstants.RIGHT_POINT);
         owner.getServerManager().getGameModel().addEdge(leftPoint, rightPoint, sender);
+        LOGGER.info("User: {} has created a new edge ({}, {}).", sender, leftPoint, rightPoint);
         owner.getServerManager().broadcastModelUpdate();
     }
 

@@ -47,10 +47,14 @@ public class PresenterManager<Controller> implements ResponseListener {
                     }
                     break;
                 case UPDATE_STATE:
-                    processUpdateBoard(response);
+                    if (controller instanceof DotsAndBoxesController) {
+                        processUpdateBoard(response);
+                    }
                     break;
                 case GAME_OVER:
-                    processGameOver(response);
+                    if (controller instanceof DotsAndBoxesController) {
+                        processGameOver(response);
+                    }
                     break;
                 case ADMINISTRATIVE:
                     break;
@@ -102,11 +106,11 @@ public class PresenterManager<Controller> implements ResponseListener {
 
     private void processUpdateBoard(Response response) {
         String currentPlayer = (String) response.getParameter(ClientConstants.CURRENT_PLAYER);
-        List<String> boxes = (List<String>) response.getParameter(ClientConstants.MODEL_BOXES);
-        List<Boolean> edges = (List<Boolean>) response.getParameter(ClientConstants.MODEL_EDGES);
-        List<Boolean> dots = (List<Boolean>) response.getParameter(ClientConstants.MODEL_DOTS);
+        List<Object> gameModel = (List<Object>) response.getParameter(ClientConstants.MODEL);
+        //List<Boolean> edges = (List<Boolean>) response.getParameter(ClientConstants.MODEL_EDGES);
+        //List<Boolean> dots = (List<Boolean>) response.getParameter(ClientConstants.MODEL_DOTS);
 
-        ((DotsAndBoxesController) controller).updateBoard(dots, edges, boxes);
+        ((DotsAndBoxesController) controller).updateBoard(gameModel);
         ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
     }
 

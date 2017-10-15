@@ -22,7 +22,7 @@ public abstract class ServerConstants {
     public static final String USER_NAME = "userName";
     public static final String LIST_USERS = "listOfUsers";
     public static final String CURRENT_PLAYER = "currentPlayer";
-    public static final String MODEL_DOTS = "dots";
+    public static final String MODEL = "model";
     public static final String MODEL_EDGES = "edges";
     public static final String MODEL_BOXES = "boxes";
     public static final String LEFT_POINT = "leftPoint";
