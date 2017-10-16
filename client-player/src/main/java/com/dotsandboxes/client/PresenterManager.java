@@ -99,9 +99,11 @@ public class PresenterManager<Controller> implements ResponseListener {
         int rows = (int) response.getParameter(ClientConstants.BOARD_SIZE_ROWS);
         int cols = (int) response.getParameter(ClientConstants.BOARD_SIZE_COLUMNS);
         String currentPlayer = (String) response.getParameter(ClientConstants.CURRENT_PLAYER);
+        List<Object> gameModel = (List<Object>) response.getParameter(ClientConstants.MODEL);
 
         ((DotsAndBoxesController) controller).initBoard(rows, cols);
         ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
+        ((DotsAndBoxesController) controller).updateBoard(gameModel);
     }
 
     private void processUpdateBoard(Response response) {

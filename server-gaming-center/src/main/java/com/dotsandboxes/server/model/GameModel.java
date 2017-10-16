@@ -7,10 +7,14 @@
  */
 package com.dotsandboxes.server.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
 
 public class GameModel {
+    Logger logger = LoggerFactory.getLogger(GameModel.class);
+
     private UsersModel users;
 
     private Integer rows;
@@ -70,7 +74,51 @@ public class GameModel {
 
     public void addEdge(int leftPoint, int rightPoint, String userName) {
         String userAddress = getUsers().getUserAddressByName(userName);
+        int iLeft = leftPoint % (columns + 1);
+        int jLeft = leftPoint / (columns + 1);
+        int iRight = rightPoint % (columns + 1);
+        int jRight = rightPoint / (columns + 1);
 
+        Set<Integer> neighborsLeft = new HashSet<Integer>();
+        neighborsLeft.add(getTopNeighbor(iLeft, jLeft));
+        neighborsLeft.add(getBottomNeighbor(iLeft, jLeft));
+        neighborsLeft.add(getLeftNeighbor(iLeft, jLeft));
+        neighborsLeft.add(getRightNeighbor(iLeft, jLeft));
+
+        Set<Integer> neighborsRight = new HashSet<Integer>();
+        neighborsRight.add(getTopNeighbor(iRight, jRight));
+        neighborsRight.add(getBottomNeighbor(iRight, jRight));
+        neighborsRight.add(getLeftNeighbor(iRight, jRight));
+        neighborsRight.add(getRightNeighbor(iRight, jRight));
+
+        Set<Integer> commonNeighbors = new HashSet<Integer>(neighborsLeft);
+        commonNeighbors.retainAll(neighborsRight);
+
+        int commonEdge = -1;
+        for (Integer neighbor : commonNeighbors) {
+            if (!neighbor.equals(-1)) {
+                commonEdge = neighbor;
+            }
+        }
+
+        logger.info("New edge: {}.", commonEdge);
+        edges.set(commonEdge, false);
+    }
+
+    private int getTopNeighbor(int i, int j) {
+        return j == 0 ? -1 : j * columns + (j - 1) * (columns + 1) + i;
+    }
+
+    private int getBottomNeighbor(int i, int j) {
+        return j == rows ? -1 : (j + 1) * columns + j * (columns + 1) + i;
+    }
+
+    private int getLeftNeighbor(int i, int j) {
+        return i == 0 ? -1 : j * columns + j * (columns + 1) + i - 1;
+    }
+
+    private int getRightNeighbor(int i, int j) {
+        return i == columns ? -1 : j * columns + j * (columns + 1) + i;
     }
 
     @Deprecated
