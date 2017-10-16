@@ -74,10 +74,10 @@ public class GameModel {
 
     public void addEdge(int leftPoint, int rightPoint, String userName) {
         String userAddress = getUsers().getUserAddressByName(userName);
-        int iLeft = leftPoint % (columns + 1);
-        int jLeft = leftPoint / (columns + 1);
-        int iRight = rightPoint % (columns + 1);
-        int jRight = rightPoint / (columns + 1);
+        int jLeft = leftPoint % (columns + 1);
+        int iLeft = leftPoint / (columns + 1);
+        int jRight = rightPoint % (columns + 1);
+        int iRight = rightPoint / (columns + 1);
 
         Set<Integer> neighborsLeft = new HashSet<Integer>();
         neighborsLeft.add(getTopNeighbor(iLeft, jLeft));
@@ -101,24 +101,50 @@ public class GameModel {
             }
         }
 
-        logger.info("New edge: {}.", commonEdge);
+        logger.trace("New edge: {}.", commonEdge);
         edges.set(commonEdge, false);
+
+        updateDots();
     }
 
     private int getTopNeighbor(int i, int j) {
-        return j == 0 ? -1 : j * columns + (j - 1) * (columns + 1) + i;
+        return j == 0 ? -1 : j * rows + (j - 1) * (rows + 1) + i;
     }
 
     private int getBottomNeighbor(int i, int j) {
-        return j == rows ? -1 : (j + 1) * columns + j * (columns + 1) + i;
+        return j == columns ? -1 : (j + 1) * rows + j * (rows + 1) + i;
     }
 
     private int getLeftNeighbor(int i, int j) {
-        return i == 0 ? -1 : j * columns + j * (columns + 1) + i - 1;
+        return i == 0 ? -1 : j * rows + j * (rows + 1) + i - 1;
     }
 
     private int getRightNeighbor(int i, int j) {
-        return i == columns ? -1 : j * columns + j * (columns + 1) + i;
+        return i == rows ? -1 : j * rows + j * (rows + 1) + i;
+    }
+
+    private void updateDots() {
+        for (int dot = 0; dot < dots.size(); dot++) {
+            int j = dot / (rows + 1);
+            int i = dot % (rows + 1);
+
+            List<Integer> neighbors = new ArrayList<Integer>();
+            neighbors.add(getTopNeighbor(i, j));
+            neighbors.add(getBottomNeighbor(i, j));
+            neighbors.add(getLeftNeighbor(i, j));
+            neighbors.add(getRightNeighbor(i, j));
+
+            int countOfInactiveEdges = 0;
+            for (Integer neighbor : neighbors) {
+                if (neighbor.equals(-1) || !edges.get(neighbor)) {
+                    countOfInactiveEdges++;
+                }
+            }
+
+            if (countOfInactiveEdges == neighbors.size()) {
+                dots.set(dot, false);
+            }
+        }
     }
 
     @Deprecated
