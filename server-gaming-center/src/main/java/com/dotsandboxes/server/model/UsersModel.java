@@ -97,6 +97,21 @@ public class UsersModel {
      * Give a move to the next player after currentPlayer.
      */
     public void updateCurrentPlayer() {
-        //currentPlayer
+        Iterator<Map.Entry<String, String>> iterator = users.entrySet().iterator();
+        String firstPlayer = null;
+        String nextPlayer = currentPlayer;
+
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> next = iterator.next();
+            if (firstPlayer == null) {
+                firstPlayer = next.getKey();
+            }
+            if (next.getKey().equals(currentPlayer)) {
+                nextPlayer = iterator.hasNext() ? iterator.next().getKey() : firstPlayer;
+                break;
+            }
+        }
+
+        currentPlayer = nextPlayer;
     }
 }

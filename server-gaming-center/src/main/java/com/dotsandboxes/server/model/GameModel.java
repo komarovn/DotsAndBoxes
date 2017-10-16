@@ -104,6 +104,8 @@ public class GameModel {
         logger.trace("New edge: {}.", commonEdge);
         edges.set(commonEdge, false);
 
+        users.updateCurrentPlayer();
+
         updateDots();
     }
 
@@ -145,16 +147,6 @@ public class GameModel {
                 dots.set(dot, false);
             }
         }
-    }
-
-    @Deprecated
-    public List<Boolean> getDots() {
-        return dots;
-    }
-
-    @Deprecated
-    public List<Boolean> getEdges() {
-        return edges;
     }
 
     @Deprecated
