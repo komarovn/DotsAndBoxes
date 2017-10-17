@@ -159,16 +159,16 @@ public class GameModel {
     private boolean updateBoxes() {
         boolean isNamedBoxCreated = false;
         for (int box = 0; box < boxes.size(); box++) {
-            int i = box % (rows + 1);
-            int j = box / (rows + 1);
+            int j = box % rows;
+            int i = box / rows;
 
             List<Integer> neighborsEdges = new ArrayList<Integer>();
-            neighborsEdges.add(j * rows + j * (rows + 1) + i); // top
-            neighborsEdges.add((j + 1) * rows + (j + 1) * (rows + 1) + i); // bottom
-            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i - 1); // left
-            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i); // right
+            neighborsEdges.add((i + 1) * rows + i * (rows + 1) + j); // top
+            neighborsEdges.add((i + 1) * rows + i * (rows + 1) + j + 1); // bottom
+            neighborsEdges.add(i * rows + i * (rows + 1) + j); // left
+            neighborsEdges.add((i + 1) * rows + (i + 1) * (rows + 1) + j); // right
 
-            if (boxes.get(box) == null) {
+            if (boxes.get(i * rows + j) == null) {
                 int countOfInactiveEdges = 0;
 
                 for (Integer neighborEdge : neighborsEdges) {
@@ -179,7 +179,7 @@ public class GameModel {
 
                 if (countOfInactiveEdges == 4) {
                     isNamedBoxCreated = true;
-                    boxes.set(box, users.getCurrentPlayer());
+                    boxes.set(i * rows + j, users.getCurrentPlayer());
                 }
             }
         }
