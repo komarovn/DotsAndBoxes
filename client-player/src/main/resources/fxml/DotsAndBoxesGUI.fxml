@@ -39,13 +39,29 @@
                              </font>
                          </Label>
                         <VBox fx:id="usersPane" prefHeight="200.0" prefWidth="100.0" />
+                        <Label fx:id="winnerNameLabel" text="erjgor">
+                           <font>
+                              <Font name="GothamPro-Light" size="31.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="8.0" left="16.0" top="16.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="winnerTextLabel" text="Wins!">
+                            <font>
+                                <Font name="GothamPro-Light" size="31.0" />
+                            </font>
+                           <VBox.margin>
+                              <Insets left="16.0" />
+                           </VBox.margin>
+                        </Label>
                      </children>
                   </VBox>
                </children>
             </AnchorPane>
           <AnchorPane pickOnBounds="false" prefHeight="500" prefWidth="500" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <GridPane fx:id="board" styleClass="gaming-board" prefWidth="491.0">
+                  <GridPane fx:id="board" prefWidth="491.0" styleClass="gaming-board">
                   </GridPane>
                </children></AnchorPane>
         </items>

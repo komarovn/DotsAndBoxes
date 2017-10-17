@@ -107,8 +107,8 @@ public class PresenterManager<Controller> implements ResponseListener {
         List<Object> gameModel = (List<Object>) response.getParameter(ClientConstants.MODEL);
         String winner = (String) response.getParameter(ClientConstants.WINNER);
 
-        ((DotsAndBoxesController) controller).updateBoard(gameModel);
         ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
+        ((DotsAndBoxesController) controller).updateBoard(gameModel);
         if (winner != null) {
             ((DotsAndBoxesController) controller).informGameOver(winner);
         }

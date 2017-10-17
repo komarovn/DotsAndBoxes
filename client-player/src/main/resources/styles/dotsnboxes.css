@@ -8,11 +8,11 @@
     -fx-min-height: 16px;
     -fx-max-width: 16px;
     -fx-max-height: 16px;
-    -fx-background-color: lightpink
+    -fx-background-color: #007a6d
 }
 
 .dot-button:selected {
-    -fx-background-color: coral;
+    -fx-background-color: #26a69a;
 }
 
 .box-panel {

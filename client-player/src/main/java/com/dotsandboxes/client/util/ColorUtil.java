@@ -21,8 +21,10 @@ public class ColorUtil {
             "#eeb35d",
             "#779ed9",
             "#41bb7d",
-            "#75c043",
-            "#c6d1e4");
+            "#fdd835",
+            "#c6d1e4",
+            "#c51162",
+            "#78909c");
 
     public static String getNextColor() {
         String result;

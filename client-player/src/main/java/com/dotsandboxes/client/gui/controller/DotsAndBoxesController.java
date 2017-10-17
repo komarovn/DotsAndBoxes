@@ -49,8 +49,16 @@ public class DotsAndBoxesController implements Initializable {
     @FXML
     private GridPane board;
 
+    @FXML
+    private Label winnerNameLabel;
+
+    @FXML
+    private Label winnerTextLabel;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        winnerNameLabel.setVisible(false);
+        winnerTextLabel.setVisible(false);
     }
 
     public void setMainApp(DotsAndBoxes mainApp) {
@@ -141,7 +149,9 @@ public class DotsAndBoxesController implements Initializable {
     }
 
     public void informGameOver(String winner) {
-        //TODO: create a panel with information about winner's name.
+        winnerNameLabel.setText(winner);
+        winnerNameLabel.setVisible(true);
+        winnerTextLabel.setVisible(true);
     }
 
     public Node getBoardElement(final int row, final int column) {

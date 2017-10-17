@@ -102,8 +102,6 @@ public class RequestProcessor {
         response.setParameter(ServerConstants.BOARD_SIZE_ROWS, owner.getServerManager().getGameModel().getRows());
         response.setParameter(ServerConstants.BOARD_SIZE_COLUMNS, owner.getServerManager().getGameModel().getColumns());
         response.setParameter(ServerConstants.CURRENT_PLAYER, owner.getServerManager().getGameModel().getUsers().getCurrentPlayer());
-        //response.setParameter(ServerConstants.MODEL_BOXES, owner.getServerManager().getGameModel().getBoxes());
-        //response.setParameter(ServerConstants.MODEL_EDGES, owner.getServerManager().getGameModel().getEdges());
         response.setParameter(ServerConstants.MODEL, owner.getServerManager().getGameModel().convert());
     }
 

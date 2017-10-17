@@ -179,7 +179,8 @@ public class GameModel {
 
                 if (countOfInactiveEdges == 4) {
                     isNamedBoxCreated = true;
-                    boxes.set(i * rows + j, users.getCurrentPlayer());
+                    boxes.set(i * rows + j, users.getUserAddressByName(users.getCurrentPlayer()));
+                    logger.trace("Box ({}, {}) has became named.", i, j);
                 }
             }
         }
@@ -211,7 +212,8 @@ public class GameModel {
                     model.add(dots.get(dotsCounter));
                     dotsCounter++;
                 } else if (i % 2 == 1 && j % 2 == 1) {
-                    model.add(boxes.get(boxesCounter));
+                    String boxOwner = boxes.get(boxesCounter);
+                    model.add(boxOwner == null ? null : users.getUserNameByAddress(boxOwner));
                     boxesCounter++;
                 } else {
                     model.add(edges.get(edgesCounter));
