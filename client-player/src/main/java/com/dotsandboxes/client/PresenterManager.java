@@ -13,6 +13,7 @@ import com.dotsandboxes.client.gui.controller.LoginController;
 import com.dotsandboxes.client.listeners.ResponseListener;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Response;
+import javafx.scene.layout.Pane;
 
 import java.util.List;
 
@@ -49,11 +50,6 @@ public class PresenterManager<Controller> implements ResponseListener {
                 case UPDATE_STATE:
                     if (controller instanceof DotsAndBoxesController) {
                         processUpdateBoard(response);
-                    }
-                    break;
-                case GAME_OVER:
-                    if (controller instanceof DotsAndBoxesController) {
-                        processGameOver(response);
                     }
                     break;
                 case ADMINISTRATIVE:
@@ -109,14 +105,12 @@ public class PresenterManager<Controller> implements ResponseListener {
     private void processUpdateBoard(Response response) {
         String currentPlayer = (String) response.getParameter(ClientConstants.CURRENT_PLAYER);
         List<Object> gameModel = (List<Object>) response.getParameter(ClientConstants.MODEL);
-        //List<Boolean> edges = (List<Boolean>) response.getParameter(ClientConstants.MODEL_EDGES);
-        //List<Boolean> dots = (List<Boolean>) response.getParameter(ClientConstants.MODEL_DOTS);
+        String winner = (String) response.getParameter(ClientConstants.WINNER);
 
         ((DotsAndBoxesController) controller).updateBoard(gameModel);
         ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
-    }
-
-    private void processGameOver(Response response) {
-        // TODO: response contains an information about who won the game.
+        if (winner != null) {
+            ((DotsAndBoxesController) controller).informGameOver(winner);
+        }
     }
 }

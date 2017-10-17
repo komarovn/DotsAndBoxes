@@ -165,8 +165,8 @@ public class GameModel {
             List<Integer> neighborsEdges = new ArrayList<Integer>();
             neighborsEdges.add(j * rows + j * (rows + 1) + i); // top
             neighborsEdges.add((j + 1) * rows + (j + 1) * (rows + 1) + i); // bottom
-            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i); // left
-            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i + 1); // right
+            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i - 1); // left
+            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i); // right
 
             if (boxes.get(box) == null) {
                 int countOfInactiveEdges = 0;
@@ -221,6 +221,40 @@ public class GameModel {
         }
 
         return model;
+    }
+
+    public boolean isGameOver() {
+        boolean isGameOver = true;
+
+        for (String owner : boxes) {
+            if (owner == null) {
+                isGameOver = false;
+            }
+        }
+
+        return isGameOver;
+    }
+
+    public String getWinnerName() {
+        Map<String, Integer> scores = new HashMap<String, Integer>();
+
+        for (String playerName : users.getListOfUsers()) {
+            scores.put(playerName, 0);
+        }
+
+        for (String playerId : boxes) {
+            String playerName = users.getUserNameByAddress(playerId);
+            scores.put(users.getUserNameByAddress(playerId), scores.get(playerName) + 1);
+        }
+
+        Map.Entry<String, Integer> bestEntry = null;
+        for (Map.Entry<String, Integer> entry : scores.entrySet()) {
+            if (bestEntry == null || bestEntry.getValue() < entry.getValue()) {
+                bestEntry = entry;
+            }
+        }
+
+        return bestEntry.getKey();
     }
 
     public void destroy() {

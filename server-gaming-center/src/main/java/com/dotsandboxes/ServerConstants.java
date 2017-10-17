@@ -23,8 +23,7 @@ public abstract class ServerConstants {
     public static final String LIST_USERS = "listOfUsers";
     public static final String CURRENT_PLAYER = "currentPlayer";
     public static final String MODEL = "model";
-    public static final String MODEL_EDGES = "edges";
-    public static final String MODEL_BOXES = "boxes";
+    public static final String WINNER = "winner";
     public static final String LEFT_POINT = "leftPoint";
     public static final String RIGHT_POINT = "rightPoint";
     public static final String CLIENT_STATE = "clientState";

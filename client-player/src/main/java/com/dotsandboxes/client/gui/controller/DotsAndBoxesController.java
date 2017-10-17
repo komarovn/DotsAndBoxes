@@ -140,6 +140,10 @@ public class DotsAndBoxesController implements Initializable {
         return null;
     }
 
+    public void informGameOver(String winner) {
+        //TODO: create a panel with information about winner's name.
+    }
+
     public Node getBoardElement(final int row, final int column) {
         Node result = null;
         ObservableList<Node> childs = board.getChildren();

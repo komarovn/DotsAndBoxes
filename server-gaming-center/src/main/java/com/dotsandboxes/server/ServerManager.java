@@ -73,8 +73,9 @@ public class ServerManager {
         response.setParameter(ServerConstants.TYPE, MessageType.UPDATE_STATE);
         response.setParameter(ServerConstants.CURRENT_PLAYER, getGameModel().getUsers().getCurrentPlayer());
         response.setParameter(ServerConstants.MODEL, getGameModel().convert());
-        //response.setParameter(ServerConstants.MODEL_EDGES, getGameModel().getEdges());
-        //response.setParameter(ServerConstants.MODEL_DOTS, getGameModel().getDots());
+        if (gameModel.isGameOver()) {
+            response.setParameter(ServerConstants.WINNER, gameModel.getWinnerName());
+        }
         ServerThread.broadcastResponse(response);
         LOGGER.debug("Update model for all active users was processed.");
     }
