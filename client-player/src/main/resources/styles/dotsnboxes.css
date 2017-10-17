@@ -20,7 +20,7 @@
     -fx-min-height: 56px;
     -fx-max-width: 56px;
     -fx-max-height: 56px;
-    /*-fx-background-color: beige;*/
+    -fx-background-radius: 8px;
 }
 
 .edge-h-panel {
@@ -29,7 +29,7 @@
     -fx-min-height: 16px;
     -fx-max-width: 56px;
     -fx-max-height: 16px;
-    -fx-background-color: khaki;
+    /*-fx-background-color: khaki;*/
 }
 
 .edge-v-panel {
@@ -38,7 +38,7 @@
     -fx-min-height: 56px;
     -fx-max-width: 16px;
     -fx-max-height: 56px;
-    -fx-background-color: aqua;
+    /*-fx-background-color: aqua;*/
 }
 
 .edge-h-panel:disabled,

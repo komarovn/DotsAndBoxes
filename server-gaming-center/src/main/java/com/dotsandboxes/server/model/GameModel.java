@@ -104,9 +104,10 @@ public class GameModel {
         logger.trace("New edge: {}.", commonEdge);
         edges.set(commonEdge, false);
 
-        users.updateCurrentPlayer();
-
         updateDots();
+        if (!updateBoxes()) {
+            users.updateCurrentPlayer();
+        }
     }
 
     private int getTopNeighbor(int i, int j) {
@@ -147,6 +148,42 @@ public class GameModel {
                 dots.set(dot, false);
             }
         }
+    }
+
+    /**
+     * Update a set of boxes in game model.
+     *
+     * @return {@code true} if during of adding a new edge one box has got
+     * an owner, {@code false} - otherwise.
+     */
+    private boolean updateBoxes() {
+        boolean isNamedBoxCreated = false;
+        for (int box = 0; box < boxes.size(); box++) {
+            int i = box % (rows + 1);
+            int j = box / (rows + 1);
+
+            List<Integer> neighborsEdges = new ArrayList<Integer>();
+            neighborsEdges.add(j * rows + j * (rows + 1) + i); // top
+            neighborsEdges.add((j + 1) * rows + (j + 1) * (rows + 1) + i); // bottom
+            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i); // left
+            neighborsEdges.add((j + 1) * rows + j * (rows + 1) + i + 1); // right
+
+            if (boxes.get(box) == null) {
+                int countOfInactiveEdges = 0;
+
+                for (Integer neighborEdge : neighborsEdges) {
+                    if (!edges.get(neighborEdge)) {
+                        countOfInactiveEdges++;
+                    }
+                }
+
+                if (countOfInactiveEdges == 4) {
+                    isNamedBoxCreated = true;
+                    boxes.set(box, users.getCurrentPlayer());
+                }
+            }
+        }
+        return isNamedBoxCreated;
     }
 
     @Deprecated
