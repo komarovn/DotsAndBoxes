@@ -1,3 +1,10 @@
+/*
+ * DOTS AND BOXES GAME (WRITTEN ON SOCKETS)
+ *
+ * Developed by Nikolay Komarov
+ *
+ * (c) Lobachevsky University, 2017
+ */
 package com.dotsandboxes.corbaservice;
 
 import com.dotsandboxes.corbaservice.service.*;
@@ -5,9 +12,16 @@ import org.omg.CosNaming.*;
 import org.omg.CORBA.*;
 
 public class CorbaClient {
-    static Service serviceImpl;
+    private static CorbaClient instance = new CorbaClient();
+    private static Service serviceImpl;
 
-    public static void main(String args[]) {
+    private CorbaClient() { }
+
+    public static CorbaClient getInstance() {
+        return instance;
+    }
+
+    public void init(String ... args) {
         try {
             ORB orb = ORB.init(args, null);
             org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");

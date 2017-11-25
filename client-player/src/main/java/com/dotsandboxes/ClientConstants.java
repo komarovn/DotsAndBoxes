@@ -10,6 +10,7 @@ package com.dotsandboxes;
 public abstract class ClientConstants {
     public static final String SERVER_NAME = "localhost";
     public static final int PORT_NUMBER = 59342;
+    public static final int ORB_PORT = 1050;
 
     public static final String TYPE = "type";
 

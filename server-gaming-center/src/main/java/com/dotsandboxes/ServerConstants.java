@@ -12,6 +12,7 @@ public abstract class ServerConstants {
             "where 'n' is a number of edges in row and 'm' is a number of edges in column";
 
     public static final int PORT_NUMBER = 59342;
+    public static final int ORB_PORT = 1050;
 
     public static final String TYPE = "type";
 

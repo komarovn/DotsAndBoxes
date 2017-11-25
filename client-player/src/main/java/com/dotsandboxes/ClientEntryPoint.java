@@ -13,12 +13,13 @@ import javafx.application.Application;
 public class ClientEntryPoint {
 
     public static void main(String ... args) {
-        if (args.length == 0) {
-            System.out.println(StringResourses.INCORRECT_LAUNCH);
-            return;
+        boolean isTcp = true;
+
+        if (args.length > 1 && "-s".equals(args[0])) {
+            isTcp = !"corba".equals(args[1]);
         }
-        String host = args[0];
-        Application.launch(DotsAndBoxes.class);
+
+        Application.launch(DotsAndBoxes.class, String.valueOf(isTcp));
     }
 
 }

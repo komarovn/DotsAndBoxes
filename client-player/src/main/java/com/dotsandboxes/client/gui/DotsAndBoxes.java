@@ -15,6 +15,7 @@ import com.dotsandboxes.client.gui.controller.DotsAndBoxesController;
 import com.dotsandboxes.client.gui.controller.LoginController;
 import com.dotsandboxes.client.threads.communication.RequestThread;
 import com.dotsandboxes.client.threads.communication.ResponseThread;
+import com.dotsandboxes.corbaservice.CorbaClient;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
 import javafx.application.Application;
@@ -29,24 +30,42 @@ import org.apache.commons.lang.SerializationUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 
 public class DotsAndBoxes extends Application {
 
     private TCPClient tcpClient;
     private ResponseThread responseThread;
     private RequestThread requestThread;
+
+    private CorbaClient corbaClient;
+
     private Boolean isConnected = false;
     private Stage stage;
 
-    public DotsAndBoxes() {
-        tcpClient = new TCPClient();
-        tcpClient.runClient();
-        isConnected = tcpClient.getConnected();
-        if (isConnected) {
-            responseThread = new ResponseThread(tcpClient.getClientSocket());
-            requestThread = new RequestThread(tcpClient.getClientSocket());
-            responseThread.start();
-            requestThread.start();
+    @Override
+    public void init() throws Exception {
+        super.init();
+        boolean isTcp = true;
+        List<String> params = getParameters().getRaw();
+        if (params.size() > 0) {
+            isTcp = Boolean.valueOf(params.get(0));
+        }
+
+        if (isTcp) {
+            tcpClient = new TCPClient();
+            tcpClient.runClient();
+            isConnected = tcpClient.getConnected();
+            if (isConnected) {
+                responseThread = new ResponseThread(tcpClient.getClientSocket());
+                requestThread = new RequestThread(tcpClient.getClientSocket());
+                responseThread.start();
+                requestThread.start();
+            }
+        } else {
+            corbaClient = CorbaClient.getInstance();
+            corbaClient.init("-ORBInitialPort", String.valueOf(ClientConstants.ORB_PORT));
         }
     }
 
