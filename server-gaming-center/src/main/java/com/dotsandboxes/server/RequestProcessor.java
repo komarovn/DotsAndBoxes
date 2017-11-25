@@ -159,6 +159,13 @@ public class RequestProcessor {
         if (ServerConstants.WAITING_FOR_GAME_CREATION.equals(clientState)) {
             response.setParameter(ServerConstants.TYPE, MessageType.LOGIN);
             response.setParameter(ServerConstants.IS_GAME_CREATED, owner.getServerManager().getGameModel().isGameCreated());
+        } else if (ServerConstants.UPDATE_MODEL.equals(clientState)) {
+            response.setParameter(ServerConstants.TYPE, MessageType.UPDATE_STATE);
+            processLoadUsers(request, response);
+            processGameSettings(request, response);
+            if (owner.getServerManager().getGameModel().isGameOver()) {
+                response.setParameter(ServerConstants.WINNER, owner.getServerManager().getGameModel().getWinnerName());
+            }
         }
     }
 

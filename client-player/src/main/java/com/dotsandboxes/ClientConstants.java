@@ -33,5 +33,6 @@ public abstract class ClientConstants {
     public static final String SERVER_STATE = "serverState";
     public static final String CLIENT_ADDRESS = "clientAddress";
     public static final String WAITING_FOR_GAME_CREATION = "waitingForGameCreation";
+    public static final String UPDATE_MODEL = "updateModel";
     public static final String MESSAGE = "message";
 }
