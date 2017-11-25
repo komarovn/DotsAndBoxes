@@ -1,0 +1,13 @@
+module com {
+    module dotsandboxes {
+        module corbaservice {
+            module service {
+                interface Service {
+                    string startCorbaService();
+                    string processRequest(in string request);
+                    oneway void shutdownService();
+                };
+            };
+        };
+    };
+};

@@ -1,0 +1,1 @@
+cd server-gaming-center\src\main\resources && "%JAVA_HOME%\bin\idlj.exe" -td ../java -fall CorbaService.idl && copy CorbaService.idl "../../../../client-player/src/main/resources/CorbaService.idl" && cd ../../../../client-player/src/main/resources && "%JAVA_HOME%\bin\idlj.exe" -td ../java -fall CorbaService.idl && cd ../../../../

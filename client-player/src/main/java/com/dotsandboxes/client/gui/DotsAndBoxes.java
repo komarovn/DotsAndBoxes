@@ -25,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.commons.lang.SerializationUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -97,7 +98,9 @@ public class DotsAndBoxes extends Application {
     }
 
     private void sendInitialRequest() {
-        requestThread.sendRequest(new Request(MessageType.TRY_CONNECT));
+        Request initialRequest = new Request(MessageType.TRY_CONNECT);
+        byte[] serializedInitialRequest = SerializationUtils.serialize(initialRequest);
+        requestThread.sendRequest(initialRequest);
     }
 
     public void openMainFrame(String userName) {
