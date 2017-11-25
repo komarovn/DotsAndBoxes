@@ -8,6 +8,9 @@
 package com.dotsandboxes.corbaservice;
 
 import com.dotsandboxes.corbaservice.service.*;
+import com.dotsandboxes.shared.Request;
+import com.dotsandboxes.shared.Response;
+import org.apache.commons.lang.SerializationUtils;
 import org.omg.CosNaming.*;
 import org.omg.CORBA.*;
 
@@ -43,8 +46,10 @@ public class CorbaClient {
      * @param request - request to be sent.
      * @return response object.
      */
-    public String processRequest(String request) {
-        return serviceImpl.processRequest(request);
+    public Response processRequest(Request request) {
+        byte[] requestSerialized = SerializationUtils.serialize(request);
+        byte[] responseSerialized = serviceImpl.processRequest(requestSerialized);
+        return (Response) SerializationUtils.deserialize(responseSerialized);
     }
 
     /**
@@ -52,7 +57,7 @@ public class CorbaClient {
      *
      * @param request - request to be sent.
      */
-    public void sendRequest(String request) {
-        serviceImpl.sendRequest(request);
+    public void sendRequest(Request request) {
+        serviceImpl.sendRequest(SerializationUtils.serialize(request));
     }
 }

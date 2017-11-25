@@ -2,10 +2,10 @@ module com {
     module dotsandboxes {
         module corbaservice {
             module service {
+                typedef sequence<octet> ByteArray;
                 interface Service {
-                    string startCorbaService();
-                    string processRequest(in string request);
-                    oneway void sendRequest(in string request);
+                    ByteArray processRequest(in ByteArray request);
+                    oneway void sendRequest(in ByteArray request);
                 };
             };
         };

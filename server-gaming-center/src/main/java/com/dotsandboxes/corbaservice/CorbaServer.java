@@ -7,7 +7,10 @@
  */
 package com.dotsandboxes.corbaservice;
 
+import com.dotsandboxes.Processable;
 import com.dotsandboxes.corbaservice.service.*;
+import com.dotsandboxes.server.RequestProcessor;
+import com.dotsandboxes.server.ServerManager;
 import org.omg.CosNaming.*;
 import org.omg.CORBA.*;
 import org.omg.PortableServer.*;
@@ -15,9 +18,11 @@ import org.omg.PortableServer.POA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CorbaServer {
+public class CorbaServer implements Processable {
     private static CorbaServer instance = new CorbaServer();
     private ORB orb;
+    private ServerManager serverManager;
+    private RequestProcessor requestProcessor;
 
     private Logger LOGGER = LoggerFactory.getLogger(CorbaServer.class);
 
@@ -34,6 +39,7 @@ public class CorbaServer {
             rootpoa.the_POAManager().activate();
 
             CorbaServiceImpl serviceImpl = new CorbaServiceImpl();
+            serviceImpl.setOwner(this);
             org.omg.CORBA.Object ref = rootpoa.servant_to_reference(serviceImpl);
 
             Service href = ServiceHelper.narrow(ref);
@@ -54,9 +60,19 @@ public class CorbaServer {
         if (orb == null) {
             LOGGER.warn("Server was not initialized.");
         } else {
-            orb.run();
             LOGGER.info("Server was started.");
+            requestProcessor = new RequestProcessor(this);
+            orb.run();
         }
+    }
+
+    @Override
+    public ServerManager getServerManager() {
+        return serverManager;
+    }
+
+    public RequestProcessor getRequestProcessor() {
+        return requestProcessor;
     }
 
     public void shutdown() {

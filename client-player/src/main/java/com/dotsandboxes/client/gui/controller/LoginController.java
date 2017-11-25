@@ -21,7 +21,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import org.apache.commons.lang.SerializationUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -83,12 +82,12 @@ public class LoginController implements Initializable {
             public void handle(ActionEvent event) {
                 Request request = new Request(MessageType.ADMINISTRATIVE);
                 request.setParameter(ClientConstants.CLIENT_STATE, "DISCONNECT");
-                if (requestListener != null) {
-                    if (isConnected) {
+                if (isConnected) {
+                    if (requestListener != null) {
                         requestListener.sendRequest(request);
+                    } else if (orbRequestListener != null) {
+                        orbRequestListener.sendRequest(request);
                     }
-                } else if (orbRequestListener != null) {
-                    orbRequestListener.sendRequest("565656"); //TODO: object
                 }
                 System.out.println("App is closed");
                 Platform.exit();
@@ -165,7 +164,12 @@ public class LoginController implements Initializable {
             }
 
             request.setParameter(ClientConstants.USER_NAME, userNameTextfield.getText());
-            requestListener.sendRequest(request);
+
+            if (requestListener != null) {
+                requestListener.sendRequest(request);
+            } else if (orbRequestListener != null) {
+                orbRequestListener.processRequest(request); //TODO: response
+            }
         }
         else {
             statusLabel.setText(FILL_FIELDS);

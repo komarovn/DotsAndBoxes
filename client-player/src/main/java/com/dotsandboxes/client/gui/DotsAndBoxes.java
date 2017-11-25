@@ -18,6 +18,7 @@ import com.dotsandboxes.client.threads.communication.ResponseThread;
 import com.dotsandboxes.corbaservice.CorbaClient;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
+import com.dotsandboxes.shared.Response;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -26,7 +27,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.apache.commons.lang.SerializationUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -111,7 +111,7 @@ public class DotsAndBoxes extends Application {
                         requestThread.sendRequest(request);
                     }
                 } else if (corbaClient != null) {
-                    corbaClient.sendRequest("rererer"); // TODO: obj
+                    corbaClient.sendRequest(request);
                 }
                 System.out.println("App is closed");
                 Platform.exit();
@@ -125,8 +125,7 @@ public class DotsAndBoxes extends Application {
         if (tcpClient != null) {
             requestThread.sendRequest(initialRequest);
         } else if (corbaClient != null) {
-            byte[] serializedInitialRequest = SerializationUtils.serialize(initialRequest);
-            String response = corbaClient.processRequest("trt"); //TODO: obj
+            Response response = corbaClient.processRequest(initialRequest); //TODO: resp
         }
     }
 
@@ -145,7 +144,7 @@ public class DotsAndBoxes extends Application {
             PresenterManager<DotsAndBoxesController> presenterManager = new PresenterManager<>();
             presenterManager.setController(controller);
             controller.addRequestListener(requestThread);
-            controller.addOrbRequestLitener(corbaClient);
+            controller.addOrbRequestListener(corbaClient);
             if (responseThread != null) {
                 responseThread.addResponseListener(presenterManager);
             }
@@ -162,7 +161,7 @@ public class DotsAndBoxes extends Application {
         if (tcpClient != null) {
             requestThread.sendRequest(usersRequest);
         } else if (corbaClient != null) {
-            corbaClient.processRequest("trtr"); // TODO: obj
+            corbaClient.processRequest(usersRequest); // TODO": resp
         }
     }
 
@@ -171,7 +170,7 @@ public class DotsAndBoxes extends Application {
         if (tcpClient != null) {
             requestThread.sendRequest(settingsRequest);
         } else if (corbaClient != null) {
-            corbaClient.processRequest("fg"); // tODO: obj
+            corbaClient.processRequest(settingsRequest); // tODO: resp
         }
     }
 }

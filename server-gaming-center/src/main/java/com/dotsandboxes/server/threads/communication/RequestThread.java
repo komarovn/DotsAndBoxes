@@ -7,6 +7,7 @@
  */
 package com.dotsandboxes.server.threads.communication;
 
+import com.dotsandboxes.Processable;
 import com.dotsandboxes.server.RequestProcessor;
 import com.dotsandboxes.server.ServerManager;
 import com.dotsandboxes.server.listeners.ResponseListener;
@@ -19,7 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
-public class RequestThread extends Thread {
+public class RequestThread extends Thread implements Processable {
 
     private Logger LOGGER = LoggerFactory.getLogger(RequestThread.class);
 
@@ -88,6 +89,7 @@ public class RequestThread extends Thread {
         return requestProcessor;
     }
 
+    @Override
     public ServerManager getServerManager() {
         return serverManager;
     }

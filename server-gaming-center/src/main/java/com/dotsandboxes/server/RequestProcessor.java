@@ -7,7 +7,10 @@
  */
 package com.dotsandboxes.server;
 
+import com.dotsandboxes.Processable;
 import com.dotsandboxes.ServerConstants;
+import com.dotsandboxes.corbaservice.CorbaServer;
+import com.dotsandboxes.server.threads.ServerThread;
 import com.dotsandboxes.server.threads.communication.RequestThread;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
@@ -21,9 +24,9 @@ import org.slf4j.LoggerFactory;
 public class RequestProcessor {
     private Logger LOGGER = LoggerFactory.getLogger(RequestProcessor.class);
 
-    private RequestThread owner;
+    private Processable owner;
 
-    public RequestProcessor(RequestThread owner) {
+    public RequestProcessor(Processable owner) {
         this.owner = owner;
     }
 
@@ -62,7 +65,7 @@ public class RequestProcessor {
     }
 
     private void processTryConnect(Request request, Response response) {
-        String userAddress =  owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
+        String userAddress = getUserAddress();
         LOGGER.info("Established connection: {}", userAddress);
         response.setParameter(ServerConstants.IS_FIRST_CLIENT, !owner.getServerManager().isAnyConnections());
         response.setParameter(ServerConstants.IS_GAME_CREATED, owner.getServerManager().getGameModel().isGameCreated());
@@ -122,7 +125,17 @@ public class RequestProcessor {
     }
 
     private String getUserAddress() {
-        return owner.getClientSocket().getInetAddress().getHostAddress() + ":" + owner.getClientSocket().getPort();
+        String userAddress = "";
+
+        if (owner instanceof RequestThread) {
+            userAddress = ((RequestThread) owner).getClientSocket().getInetAddress().getHostAddress() + ":" +
+                    ((RequestThread) owner).getClientSocket().getPort();
+        } else if (owner instanceof CorbaServer) {
+            //((CorbaServer) owner)
+            //TODO: get user address
+        }
+
+        return userAddress;
     }
 
     private void processCreateEdge(Request request, Response response) {

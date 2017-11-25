@@ -25,7 +25,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import org.apache.commons.lang.SerializationUtils;
 
 import java.net.URL;
 import java.util.*;
@@ -37,7 +36,7 @@ public class DotsAndBoxesController implements Initializable {
     private DotsAndBoxes mainApp;
     private String currentUser;
     private RequestListener requestListener;
-    private CorbaClient orbRequestLitener;
+    private CorbaClient orbRequestListener;
     private boolean isMyMove = false;
     private List<Object> gameModel;
     private Integer leftDot = null;
@@ -76,8 +75,8 @@ public class DotsAndBoxesController implements Initializable {
         requestListener = listener;
     }
 
-    public void addOrbRequestLitener(CorbaClient listener) {
-        this.orbRequestLitener = listener;
+    public void addOrbRequestListener(CorbaClient listener) {
+        this.orbRequestListener = listener;
     }
 
     private Label createUserLabel(String userName) {
@@ -179,7 +178,11 @@ public class DotsAndBoxesController implements Initializable {
         Request request = new Request(MessageType.CREATE_EDGE);
         request.setParameter(ClientConstants.LEFT_POINT, leftPoint);
         request.setParameter(ClientConstants.RIGHT_POINT, rightPoint);
-        requestListener.sendRequest(request);
+        if (requestListener != null) {
+            requestListener.sendRequest(request);
+        } else if (orbRequestListener != null) {
+            orbRequestListener.processRequest(request); //TODO: resp
+        }
     }
 
     private ToggleButton createDot() {
