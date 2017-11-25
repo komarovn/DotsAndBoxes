@@ -17,3 +17,9 @@ Make moves:
 
 Become a winner:  
 ![Winner](https://lh5.googleusercontent.com/MGsNE2aLh65YXTMkh6MhxfhOH348pFnlevdISx1QwFhUry5deIuwRkJo3dMD8noEY_ynoiBJeOZLBJ4=w2560-h1309)
+
+## Installation
+1. Run `compile-idl.bat` from root of project folder.
+2. Start ORB with `run-orbd.bat`.
+3. Run Server with argument `-s <type>` where `<type>` is either `tcp` or `corba`.
+4. Run Client with the same argument as for Server.

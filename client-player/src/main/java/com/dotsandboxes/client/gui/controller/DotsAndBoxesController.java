@@ -11,6 +11,7 @@ import com.dotsandboxes.ClientConstants;
 import com.dotsandboxes.client.listeners.RequestListener;
 import com.dotsandboxes.client.gui.DotsAndBoxes;
 import com.dotsandboxes.client.util.ColorUtil;
+import com.dotsandboxes.corbaservice.CorbaClient;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
 import javafx.collections.ObservableList;
@@ -36,6 +37,7 @@ public class DotsAndBoxesController implements Initializable {
     private DotsAndBoxes mainApp;
     private String currentUser;
     private RequestListener requestListener;
+    private CorbaClient orbRequestLitener;
     private boolean isMyMove = false;
     private List<Object> gameModel;
     private Integer leftDot = null;
@@ -72,6 +74,10 @@ public class DotsAndBoxesController implements Initializable {
 
     public void addRequestListener(RequestListener listener) {
         requestListener = listener;
+    }
+
+    public void addOrbRequestLitener(CorbaClient listener) {
+        this.orbRequestLitener = listener;
     }
 
     private Label createUserLabel(String userName) {

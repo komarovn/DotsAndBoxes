@@ -8,14 +8,11 @@
 package com.dotsandboxes.corbaservice;
 
 import com.dotsandboxes.corbaservice.service.ServicePOA;
-import org.omg.CORBA.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class CorbaServiceImpl extends ServicePOA {
-    private ORB orb;
-
-    public void setORB(ORB orb_val) {
-        orb = orb_val;
-    }
+    private Logger LOGGER = LoggerFactory.getLogger(CorbaServiceImpl.class);
 
     @Override
     public String startCorbaService() {
@@ -24,12 +21,15 @@ class CorbaServiceImpl extends ServicePOA {
 
     @Override
     public String processRequest(String request) {
+        LOGGER.trace("Received synchronous request: {}", request);
         //send req
-        return "ioioi";
+
+        return request;
     }
 
     @Override
-    public void shutdownService() {
-        orb.shutdown(false);
+    public void sendRequest(String request) {
+        LOGGER.trace("Received one-way request: {}", request);
+        // TODO: implement one-way communication.
     }
 }

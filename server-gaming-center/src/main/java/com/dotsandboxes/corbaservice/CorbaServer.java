@@ -12,9 +12,14 @@ import org.omg.CosNaming.*;
 import org.omg.CORBA.*;
 import org.omg.PortableServer.*;
 import org.omg.PortableServer.POA;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CorbaServer {
     private static CorbaServer instance = new CorbaServer();
+    private ORB orb;
+
+    private Logger LOGGER = LoggerFactory.getLogger(CorbaServer.class);
 
     private CorbaServer() { }
 
@@ -24,12 +29,11 @@ public class CorbaServer {
 
     public void init(String ... args) {
         try {
-            ORB orb = ORB.init(args, null);
+            this.orb = ORB.init(args, null);
             POA rootpoa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
             rootpoa.the_POAManager().activate();
 
             CorbaServiceImpl serviceImpl = new CorbaServiceImpl();
-            serviceImpl.setORB(orb);
             org.omg.CORBA.Object ref = rootpoa.servant_to_reference(serviceImpl);
 
             Service href = ServiceHelper.narrow(ref);
@@ -38,13 +42,29 @@ public class CorbaServer {
             String name = "CorbaService";
             NameComponent path[] = ncRef.to_name(name);
             ncRef.rebind(path, href);
-            System.out.println("Server ready and waiting ...");
-            orb.run();
+
+            LOGGER.info("Server was initialized.");
+            run();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-        System.out.println("Server Exiting ...");
+    public void run() {
+        if (orb == null) {
+            LOGGER.warn("Server was not initialized.");
+        } else {
+            orb.run();
+            LOGGER.info("Server was started.");
+        }
+    }
+
+    public void shutdown() {
+        if (orb != null) {
+            LOGGER.info("Server Exiting ...");
+            orb.shutdown(false);
+            LOGGER.info("Server was stopped.");
+        }
     }
 
 }

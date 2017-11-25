@@ -9,9 +9,9 @@ package com.dotsandboxes.client.gui.controller;
 
 import com.dotsandboxes.ClientConstants;
 import com.dotsandboxes.client.listeners.RequestListener;
+import com.dotsandboxes.corbaservice.CorbaClient;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
-import com.dotsandboxes.shared.Response;
 import com.dotsandboxes.client.gui.DotsAndBoxes;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -21,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import org.apache.commons.lang.SerializationUtils;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,7 +35,7 @@ public class LoginController implements Initializable {
     private DotsAndBoxes mainApp;
     private boolean isConnected = false;
     private RequestListener requestListener;
-    private Response response;
+    private CorbaClient orbRequestListener;
 
     @FXML
     private Button playButton;
@@ -80,10 +81,14 @@ public class LoginController implements Initializable {
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (isConnected) {
-                    Request request = new Request(MessageType.ADMINISTRATIVE);
-                    request.setParameter(ClientConstants.CLIENT_STATE, "DISCONNECT");
-                    requestListener.sendRequest(request);
+                Request request = new Request(MessageType.ADMINISTRATIVE);
+                request.setParameter(ClientConstants.CLIENT_STATE, "DISCONNECT");
+                if (requestListener != null) {
+                    if (isConnected) {
+                        requestListener.sendRequest(request);
+                    }
+                } else if (orbRequestListener != null) {
+                    orbRequestListener.sendRequest("565656"); //TODO: object
                 }
                 System.out.println("App is closed");
                 Platform.exit();
@@ -132,6 +137,10 @@ public class LoginController implements Initializable {
 
     public void addRequestListener(RequestListener listener) {
         requestListener = listener;
+    }
+
+    public void addOrbRequestListener(CorbaClient listener) {
+        this.orbRequestListener = listener;
     }
 
     public void openMainFrame(String userId) {

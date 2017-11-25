@@ -21,7 +21,7 @@ public class CorbaClient {
         return instance;
     }
 
-    public void init(String ... args) {
+    public boolean init(String ... args) {
         try {
             ORB orb = ORB.init(args, null);
             org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
@@ -29,9 +29,30 @@ public class CorbaClient {
             String name = "CorbaService";
             serviceImpl = ServiceHelper.narrow(ncRef.resolve_str(name));
 
-            System.out.println(serviceImpl.startCorbaService());
+            System.out.println("ORB service is ready.");
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
+    }
+
+    /**
+     * Synchronous communication.
+     *
+     * @param request - request to be sent.
+     * @return response object.
+     */
+    public String processRequest(String request) {
+        return serviceImpl.processRequest(request);
+    }
+
+    /**
+     * One-way communication.
+     *
+     * @param request - request to be sent.
+     */
+    public void sendRequest(String request) {
+        serviceImpl.sendRequest(request);
     }
 }

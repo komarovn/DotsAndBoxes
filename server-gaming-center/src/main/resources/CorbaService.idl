@@ -5,7 +5,7 @@ module com {
                 interface Service {
                     string startCorbaService();
                     string processRequest(in string request);
-                    oneway void shutdownService();
+                    oneway void sendRequest(in string request);
                 };
             };
         };

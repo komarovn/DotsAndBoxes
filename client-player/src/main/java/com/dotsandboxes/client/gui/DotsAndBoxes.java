@@ -31,7 +31,6 @@ import org.apache.commons.lang.SerializationUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 
 public class DotsAndBoxes extends Application {
 
@@ -65,7 +64,7 @@ public class DotsAndBoxes extends Application {
             }
         } else {
             corbaClient = CorbaClient.getInstance();
-            corbaClient.init("-ORBInitialPort", String.valueOf(ClientConstants.ORB_PORT));
+            isConnected = corbaClient.init("-ORBInitialPort", String.valueOf(ClientConstants.ORB_PORT));
         }
     }
 
@@ -84,12 +83,13 @@ public class DotsAndBoxes extends Application {
     }
 
     private void initializeLoginController(FXMLLoader loader) {
-        LoginController controller = loader.getController();
+        final LoginController controller = loader.getController();
         controller.setMainApp(this);
 
         PresenterManager<LoginController> presenterManager = new PresenterManager<>();
         presenterManager.setController(controller);
         controller.addRequestListener(requestThread);
+        controller.addOrbRequestListener(corbaClient);
         if (responseThread != null) {
             responseThread.addResponseListener(presenterManager);
         }
@@ -104,10 +104,14 @@ public class DotsAndBoxes extends Application {
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                if (tcpClient.getClientSocket() != null && !tcpClient.getClientSocket().isClosed()) {
-                    Request request = new Request(MessageType.ADMINISTRATIVE);
-                    request.setParameter(ClientConstants.CLIENT_STATE, "DISCONNECT");
-                    requestThread.sendRequest(request);
+                Request request = new Request(MessageType.ADMINISTRATIVE);
+                request.setParameter(ClientConstants.CLIENT_STATE, "DISCONNECT");
+                if (tcpClient != null) {
+                    if (tcpClient.getClientSocket() != null && !tcpClient.getClientSocket().isClosed()) {
+                        requestThread.sendRequest(request);
+                    }
+                } else if (corbaClient != null) {
+                    corbaClient.sendRequest("rererer"); // TODO: obj
                 }
                 System.out.println("App is closed");
                 Platform.exit();
@@ -118,8 +122,12 @@ public class DotsAndBoxes extends Application {
 
     private void sendInitialRequest() {
         Request initialRequest = new Request(MessageType.TRY_CONNECT);
-        byte[] serializedInitialRequest = SerializationUtils.serialize(initialRequest);
-        requestThread.sendRequest(initialRequest);
+        if (tcpClient != null) {
+            requestThread.sendRequest(initialRequest);
+        } else if (corbaClient != null) {
+            byte[] serializedInitialRequest = SerializationUtils.serialize(initialRequest);
+            String response = corbaClient.processRequest("trt"); //TODO: obj
+        }
     }
 
     public void openMainFrame(String userName) {
@@ -137,7 +145,10 @@ public class DotsAndBoxes extends Application {
             PresenterManager<DotsAndBoxesController> presenterManager = new PresenterManager<>();
             presenterManager.setController(controller);
             controller.addRequestListener(requestThread);
-            responseThread.addResponseListener(presenterManager);
+            controller.addOrbRequestLitener(corbaClient);
+            if (responseThread != null) {
+                responseThread.addResponseListener(presenterManager);
+            }
 
             stage.getScene().setRoot(root);
             stage.sizeToScene();
@@ -147,10 +158,20 @@ public class DotsAndBoxes extends Application {
     }
 
     private void loadUsersData() {
-        requestThread.sendRequest(new Request(MessageType.LOAD_USERS));
+        Request usersRequest = new Request(MessageType.LOAD_USERS);
+        if (tcpClient != null) {
+            requestThread.sendRequest(usersRequest);
+        } else if (corbaClient != null) {
+            corbaClient.processRequest("trtr"); // TODO: obj
+        }
     }
 
     private void loadGameSettings() {
-        requestThread.sendRequest(new Request(MessageType.GAME_SETTINGS));
+        Request settingsRequest = new Request(MessageType.GAME_SETTINGS);
+        if (tcpClient != null) {
+            requestThread.sendRequest(settingsRequest);
+        } else if (corbaClient != null) {
+            corbaClient.processRequest("fg"); // tODO: obj
+        }
     }
 }
