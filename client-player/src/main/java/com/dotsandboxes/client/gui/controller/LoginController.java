@@ -8,6 +8,7 @@
 package com.dotsandboxes.client.gui.controller;
 
 import com.dotsandboxes.ClientConstants;
+import com.dotsandboxes.client.PresenterManager;
 import com.dotsandboxes.client.listeners.RequestListener;
 import com.dotsandboxes.corbaservice.CorbaClient;
 import com.dotsandboxes.shared.MessageType;
@@ -86,6 +87,7 @@ public class LoginController implements Initializable {
                     if (requestListener != null) {
                         requestListener.sendRequest(request);
                     } else if (orbRequestListener != null) {
+                        request.setParameter(ClientConstants.CLIENT_ADDRESS, orbRequestListener.getAddress());
                         orbRequestListener.sendRequest(request);
                     }
                 }
@@ -168,7 +170,11 @@ public class LoginController implements Initializable {
             if (requestListener != null) {
                 requestListener.sendRequest(request);
             } else if (orbRequestListener != null) {
-                orbRequestListener.processRequest(request); //TODO: response
+                //TODO: rewrite it.
+                request.setParameter(ClientConstants.CLIENT_ADDRESS, orbRequestListener.getAddress());
+                PresenterManager<LoginController> manager = new PresenterManager<>();
+                manager.setController(this);
+                manager.receiveResponse(orbRequestListener.processRequest(request));
             }
         }
         else {

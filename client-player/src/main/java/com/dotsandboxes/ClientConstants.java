@@ -7,10 +7,14 @@
  */
 package com.dotsandboxes;
 
+import java.util.UUID;
+
 public abstract class ClientConstants {
     public static final String SERVER_NAME = "localhost";
     public static final int PORT_NUMBER = 59342;
     public static final int ORB_PORT = 1050;
+
+    public static final String CLIENT_ID = UUID.randomUUID().toString();
 
     public static final String TYPE = "type";
 
@@ -27,5 +31,6 @@ public abstract class ClientConstants {
     public static final String RIGHT_POINT = "rightPoint";
     public static final String CLIENT_STATE = "clientState";
     public static final String SERVER_STATE = "serverState";
+    public static final String CLIENT_ADDRESS = "clientAddress";
     public static final String MESSAGE = "message";
 }

@@ -7,6 +7,7 @@
  */
 package com.dotsandboxes.corbaservice;
 
+import com.dotsandboxes.ClientConstants;
 import com.dotsandboxes.corbaservice.service.*;
 import com.dotsandboxes.shared.Request;
 import com.dotsandboxes.shared.Response;
@@ -38,6 +39,10 @@ public class CorbaClient {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public String getAddress() {
+        return ClientConstants.CLIENT_ID;
     }
 
     /**

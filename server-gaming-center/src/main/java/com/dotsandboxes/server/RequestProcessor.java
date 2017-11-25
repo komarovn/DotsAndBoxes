@@ -10,7 +10,6 @@ package com.dotsandboxes.server;
 import com.dotsandboxes.Processable;
 import com.dotsandboxes.ServerConstants;
 import com.dotsandboxes.corbaservice.CorbaServer;
-import com.dotsandboxes.server.threads.ServerThread;
 import com.dotsandboxes.server.threads.communication.RequestThread;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
@@ -65,7 +64,7 @@ public class RequestProcessor {
     }
 
     private void processTryConnect(Request request, Response response) {
-        String userAddress = getUserAddress();
+        String userAddress = getUserAddress(request);
         LOGGER.info("Established connection: {}", userAddress);
         response.setParameter(ServerConstants.IS_FIRST_CLIENT, !owner.getServerManager().isAnyConnections());
         response.setParameter(ServerConstants.IS_GAME_CREATED, owner.getServerManager().getGameModel().isGameCreated());
@@ -74,18 +73,22 @@ public class RequestProcessor {
 
     private void processLogin(Request request, Response response) {
         try {
-            String userAddress = getUserAddress();
+            String userAddress = getUserAddress(request);
             String userName = (String) request.getParameter(ServerConstants.USER_NAME);
             owner.getServerManager().getUsers().addUser(userAddress, userName);
 
-            owner.getServerManager().broadcastUserNames();
+            if (owner instanceof RequestThread) {
+                owner.getServerManager().broadcastUserNames();
+            }
 
             if (!owner.getServerManager().getGameModel().isGameCreated()) {
                 int rowsNumber = Integer.parseInt((String) request.getParameter(ServerConstants.BOARD_SIZE_ROWS));
                 int colsNumber = Integer.parseInt((String) request.getParameter(ServerConstants.BOARD_SIZE_COLUMNS));
                 owner.getServerManager().getGameModel().initGame(rowsNumber, colsNumber);
                 LOGGER.info("Game with board size {} by {} was created!", rowsNumber, colsNumber);
-                owner.getServerManager().sendNotificationGameCreated();
+                if (owner instanceof RequestThread) {
+                    owner.getServerManager().sendNotificationGameCreated();
+                }
             }
 
             response.setParameter(ServerConstants.MESSAGE, "accept\n");
@@ -112,10 +115,12 @@ public class RequestProcessor {
         String state = (String) request.getParameter(ServerConstants.CLIENT_STATE);
 
         if (state != null && state.equals("DISCONNECT")) {
-            String userAddress = getUserAddress();
+            String userAddress = getUserAddress(request);
             owner.getServerManager().getUsers().removeUser(userAddress);
             LOGGER.info("User with address {} has been disconnected.", userAddress);
-            owner.getServerManager().broadcastUserNames();
+            if (owner instanceof RequestThread) {
+                owner.getServerManager().broadcastUserNames();
+            }
 
             if (!owner.getServerManager().isAnyConnections()) {
                 owner.getServerManager().getGameModel().destroy();
@@ -124,27 +129,28 @@ public class RequestProcessor {
         }
     }
 
-    private String getUserAddress() {
+    private String getUserAddress(Request request) {
         String userAddress = "";
 
         if (owner instanceof RequestThread) {
             userAddress = ((RequestThread) owner).getClientSocket().getInetAddress().getHostAddress() + ":" +
                     ((RequestThread) owner).getClientSocket().getPort();
         } else if (owner instanceof CorbaServer) {
-            //((CorbaServer) owner)
-            //TODO: get user address
+            userAddress = (String) request.getParameter(ServerConstants.CLIENT_ADDRESS);
         }
 
         return userAddress;
     }
 
     private void processCreateEdge(Request request, Response response) {
-        String sender = getUserAddress();
+        String sender = getUserAddress(request);
         int leftPoint = (int) request.getParameter(ServerConstants.LEFT_POINT);
         int rightPoint = (int) request.getParameter(ServerConstants.RIGHT_POINT);
         owner.getServerManager().getGameModel().addEdge(leftPoint, rightPoint, sender);
         LOGGER.info("User: {} has created a new edge ({}, {}).", sender, leftPoint, rightPoint);
-        owner.getServerManager().broadcastModelUpdate();
+        if (owner instanceof RequestThread) {
+            owner.getServerManager().broadcastModelUpdate();
+        }
     }
 
     private void processUnrecognizedMessageType(Response response) {

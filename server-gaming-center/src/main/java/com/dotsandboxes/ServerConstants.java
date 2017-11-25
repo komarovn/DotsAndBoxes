@@ -29,5 +29,6 @@ public abstract class ServerConstants {
     public static final String RIGHT_POINT = "rightPoint";
     public static final String CLIENT_STATE = "clientState";
     public static final String SERVER_STATE = "serverState";
+    public static final String CLIENT_ADDRESS = "clientAddress";
     public static final String MESSAGE = "message";
 }

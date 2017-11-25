@@ -18,7 +18,6 @@ import com.dotsandboxes.client.threads.communication.ResponseThread;
 import com.dotsandboxes.corbaservice.CorbaClient;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
-import com.dotsandboxes.shared.Response;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -98,7 +97,7 @@ public class DotsAndBoxes extends Application {
         controller.applyWaitingState();
 
         if (isConnected) {
-            sendInitialRequest();
+            sendInitialRequest(presenterManager);
         }
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -111,6 +110,7 @@ public class DotsAndBoxes extends Application {
                         requestThread.sendRequest(request);
                     }
                 } else if (corbaClient != null) {
+                    request.setParameter(ClientConstants.CLIENT_ADDRESS, corbaClient.getAddress());
                     corbaClient.sendRequest(request);
                 }
                 System.out.println("App is closed");
@@ -120,13 +120,9 @@ public class DotsAndBoxes extends Application {
         });
     }
 
-    private void sendInitialRequest() {
+    private void sendInitialRequest(PresenterManager presenterManager) {
         Request initialRequest = new Request(MessageType.TRY_CONNECT);
-        if (tcpClient != null) {
-            requestThread.sendRequest(initialRequest);
-        } else if (corbaClient != null) {
-            Response response = corbaClient.processRequest(initialRequest); //TODO: resp
-        }
+        sendRequest(initialRequest, presenterManager);
     }
 
     public void openMainFrame(String userName) {
@@ -138,9 +134,6 @@ public class DotsAndBoxes extends Application {
             controller.setMainApp(this);
             controller.setUserName(userName);
 
-            loadUsersData();
-            loadGameSettings();
-
             PresenterManager<DotsAndBoxesController> presenterManager = new PresenterManager<>();
             presenterManager.setController(controller);
             controller.addRequestListener(requestThread);
@@ -149,6 +142,9 @@ public class DotsAndBoxes extends Application {
                 responseThread.addResponseListener(presenterManager);
             }
 
+            loadUsersData(presenterManager);
+            loadGameSettings(presenterManager);
+
             stage.getScene().setRoot(root);
             stage.sizeToScene();
         } catch (IOException e) {
@@ -156,21 +152,22 @@ public class DotsAndBoxes extends Application {
         }
     }
 
-    private void loadUsersData() {
+    private void loadUsersData(PresenterManager presenterManager) {
         Request usersRequest = new Request(MessageType.LOAD_USERS);
-        if (tcpClient != null) {
-            requestThread.sendRequest(usersRequest);
-        } else if (corbaClient != null) {
-            corbaClient.processRequest(usersRequest); // TODO": resp
-        }
+        sendRequest(usersRequest, presenterManager);
     }
 
-    private void loadGameSettings() {
+    private void loadGameSettings(PresenterManager presenterManager) {
         Request settingsRequest = new Request(MessageType.GAME_SETTINGS);
+        sendRequest(settingsRequest, presenterManager);
+    }
+
+    private void sendRequest(Request request, PresenterManager presenterManager) {
         if (tcpClient != null) {
-            requestThread.sendRequest(settingsRequest);
+            requestThread.sendRequest(request);
         } else if (corbaClient != null) {
-            corbaClient.processRequest(settingsRequest); // tODO: resp
+            request.setParameter(ClientConstants.CLIENT_ADDRESS, corbaClient.getAddress());
+            presenterManager.receiveResponse(corbaClient.processRequest(request));
         }
     }
 }

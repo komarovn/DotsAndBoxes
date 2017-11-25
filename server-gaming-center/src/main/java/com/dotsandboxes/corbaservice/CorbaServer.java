@@ -62,6 +62,7 @@ public class CorbaServer implements Processable {
         } else {
             LOGGER.info("Server was started.");
             requestProcessor = new RequestProcessor(this);
+            serverManager = new ServerManager();
             orb.run();
         }
     }

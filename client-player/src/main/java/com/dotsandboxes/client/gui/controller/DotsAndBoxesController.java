@@ -8,6 +8,7 @@
 package com.dotsandboxes.client.gui.controller;
 
 import com.dotsandboxes.ClientConstants;
+import com.dotsandboxes.client.PresenterManager;
 import com.dotsandboxes.client.listeners.RequestListener;
 import com.dotsandboxes.client.gui.DotsAndBoxes;
 import com.dotsandboxes.client.util.ColorUtil;
@@ -181,7 +182,11 @@ public class DotsAndBoxesController implements Initializable {
         if (requestListener != null) {
             requestListener.sendRequest(request);
         } else if (orbRequestListener != null) {
-            orbRequestListener.processRequest(request); //TODO: resp
+            //TODO: rewrite it.
+            request.setParameter(ClientConstants.CLIENT_ADDRESS, orbRequestListener.getAddress());
+            PresenterManager<DotsAndBoxesController> manager = new PresenterManager<>();
+            manager.setController(this);
+            manager.receiveResponse(orbRequestListener.processRequest(request));
         }
     }
 
