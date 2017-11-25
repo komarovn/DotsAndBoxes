@@ -51,6 +51,7 @@ public class RequestProcessor {
                 processCreateEdge(request, response);
                 break;
             case UPDATE_STATE:
+                processUpdateState(request, response);
                 break;
             case GAME_OVER:
                 break;
@@ -150,6 +151,14 @@ public class RequestProcessor {
         LOGGER.info("User: {} has created a new edge ({}, {}).", sender, leftPoint, rightPoint);
         if (owner instanceof RequestThread) {
             owner.getServerManager().broadcastModelUpdate();
+        }
+    }
+
+    private void processUpdateState(Request request, Response response) {
+        String clientState = (String) request.getParameter(ServerConstants.CLIENT_STATE);
+        if (ServerConstants.WAITING_FOR_GAME_CREATION.equals(clientState)) {
+            response.setParameter(ServerConstants.TYPE, MessageType.LOGIN);
+            response.setParameter(ServerConstants.IS_GAME_CREATED, owner.getServerManager().getGameModel().isGameCreated());
         }
     }
 

@@ -144,6 +144,10 @@ public class LoginController implements Initializable {
         this.orbRequestListener = listener;
     }
 
+    public CorbaClient getOrbRequestListener() {
+        return orbRequestListener;
+    }
+
     public void openMainFrame(String userId) {
         statusLabel.setVisible(false);
         mainApp.openMainFrame(userId);

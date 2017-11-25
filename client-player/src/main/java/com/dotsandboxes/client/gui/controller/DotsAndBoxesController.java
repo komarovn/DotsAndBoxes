@@ -80,6 +80,10 @@ public class DotsAndBoxesController implements Initializable {
         this.orbRequestListener = listener;
     }
 
+    public CorbaClient getOrbRequestListener() {
+        return orbRequestListener;
+    }
+
     private Label createUserLabel(String userName) {
         Label userLabel = new Label(userName);
         userLabel.setFont(Font.font(REGULAR_FONT));

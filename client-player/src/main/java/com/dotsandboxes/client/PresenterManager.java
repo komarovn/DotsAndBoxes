@@ -12,10 +12,14 @@ import com.dotsandboxes.client.gui.controller.DotsAndBoxesController;
 import com.dotsandboxes.client.gui.controller.LoginController;
 import com.dotsandboxes.client.listeners.ResponseListener;
 import com.dotsandboxes.shared.MessageType;
+import com.dotsandboxes.shared.Request;
 import com.dotsandboxes.shared.Response;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class PresenterManager<Controller> implements ResponseListener {
     private Controller controller;
@@ -64,6 +68,9 @@ public class PresenterManager<Controller> implements ResponseListener {
         ((LoginController) controller).setVisibleBoardSizePanel(isFirstClient);
         if (!isFirstClient && !isGameCreated) {
             ((LoginController) controller).applyWaitingState();
+            Request request = new Request(MessageType.UPDATE_STATE);
+            request.setParameter(ClientConstants.CLIENT_STATE, ClientConstants.WAITING_FOR_GAME_CREATION);
+            retry(request, 250);
         } else {
             ((LoginController) controller).resolveWaitingState();
         }
@@ -76,6 +83,9 @@ public class PresenterManager<Controller> implements ResponseListener {
                 ((LoginController) controller).resolveWaitingState();
             } else {
                 ((LoginController) controller).applyWaitingState();
+                Request request = new Request(MessageType.UPDATE_STATE);
+                request.setParameter(ClientConstants.CLIENT_STATE, ClientConstants.WAITING_FOR_GAME_CREATION);
+                retry(request, 250);
             }
         } else if (response.getParameter(ClientConstants.MESSAGE) != null) {
             String message = (String) response.getParameter(ClientConstants.MESSAGE);
@@ -112,5 +122,26 @@ public class PresenterManager<Controller> implements ResponseListener {
         if (winner != null) {
             ((DotsAndBoxesController) controller).informGameOver(winner);
         }
+    }
+
+    private void retry(final Request request, int delay) {
+        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+
+        Thread asyncTask = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Response response = null;
+
+                if (controller instanceof LoginController) {
+                    response = ((LoginController) controller).getOrbRequestListener().processRequest(request);
+                } else if (controller instanceof DotsAndBoxesController) {
+                    response = ((DotsAndBoxesController) controller).getOrbRequestListener().processRequest(request);
+                }
+
+                receiveResponse(response);
+            }
+        });
+
+        scheduledExecutorService.schedule(asyncTask, delay, TimeUnit.MILLISECONDS);
     }
 }
