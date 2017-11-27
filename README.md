@@ -10,13 +10,13 @@ The board may be of any size. When short on time, a 2x2 board (a square of 9 dot
 
 ## Let's Play!
 Start the game with register:  
-![Register](https://lh4.googleusercontent.com/mPoWY0hhevJwUfOKqxZl7vCswYOnkX_VwS8Zle4Ul-5CcjAFC82glS8IhCtQ5_nv0pA2mJkoDlRZPNc=w2560-h1309)
+![Register](https://drive.google.com/open?id=0B7_xr5uHmq-TYXBvczFBS1pGd3M)
 
 Make moves:  
-![Moves](https://lh6.googleusercontent.com/Ft4RxZv-pu_jUYyyXwl4-UdKPMSQnoaZiycKlX-fMMAWNaHIO62atCzuxlzssn8DxfmbFV8CsME04Gg=w2560-h1309)
+![Moves](https://drive.google.com/open?id=0B7_xr5uHmq-TN0E0OGdlbUpFQlU)
 
 Become a winner:  
-![Winner](https://lh5.googleusercontent.com/MGsNE2aLh65YXTMkh6MhxfhOH348pFnlevdISx1QwFhUry5deIuwRkJo3dMD8noEY_ynoiBJeOZLBJ4=w2560-h1309)
+![Winner](https://drive.google.com/open?id=0B7_xr5uHmq-Td3RGblRiSWhDMTg)
 
 ## Installation
 1. Run `compile-idl.bat` from root of project folder.
