@@ -14,6 +14,7 @@ import com.dotsandboxes.client.listeners.ResponseListener;
 import com.dotsandboxes.shared.MessageType;
 import com.dotsandboxes.shared.Request;
 import com.dotsandboxes.shared.Response;
+import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PresenterManager<Controller> implements ResponseListener {
     private Controller controller;
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
     public void setController(Controller controller) {
         this.controller = controller;
@@ -106,7 +108,7 @@ public class PresenterManager<Controller> implements ResponseListener {
         if (((DotsAndBoxesController) controller).getOrbRequestListener() != null) {
             Request request = new Request(MessageType.UPDATE_STATE);
             request.setParameter(ClientConstants.CLIENT_STATE, ClientConstants.UPDATE_MODEL);
-            retry(request, 250);
+            retry(request, 500);
         }
     }
 
@@ -119,12 +121,6 @@ public class PresenterManager<Controller> implements ResponseListener {
         ((DotsAndBoxesController) controller).initBoard(rows, cols);
         ((DotsAndBoxesController) controller).setCurrentPlayer(currentPlayer);
         ((DotsAndBoxesController) controller).updateBoard(gameModel);
-
-        if (((DotsAndBoxesController) controller).getOrbRequestListener() != null) {
-            Request request = new Request(MessageType.UPDATE_STATE);
-            request.setParameter(ClientConstants.CLIENT_STATE, ClientConstants.UPDATE_MODEL);
-            retry(request, 250);
-        }
     }
 
     private void processUpdateBoard(Response response) {
@@ -137,16 +133,9 @@ public class PresenterManager<Controller> implements ResponseListener {
         if (winner != null) {
             ((DotsAndBoxesController) controller).informGameOver(winner);
         }
-
-        if (((DotsAndBoxesController) controller).getOrbRequestListener() != null) {
-            Request request = new Request(MessageType.UPDATE_STATE);
-            request.setParameter(ClientConstants.CLIENT_STATE, ClientConstants.UPDATE_MODEL);
-            retry(request, 250);
-        }
     }
 
     public void retry(final Request request, int delay) {
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
         Thread asyncTask = new Thread(new Runnable() {
             @Override
@@ -159,7 +148,13 @@ public class PresenterManager<Controller> implements ResponseListener {
                     response = ((DotsAndBoxesController) controller).getOrbRequestListener().processRequest(request);
                 }
 
-                receiveResponse(response);
+                final Response finalResponse = response;
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        receiveResponse(finalResponse);
+                    }
+                });
             }
         });
 
