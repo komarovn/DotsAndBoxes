@@ -10,13 +10,13 @@ The board may be of any size. When short on time, a 2x2 board (a square of 9 dot
 
 ## Let's Play!
 Start the game with register:  
-![Register](https://drive.google.com/open?id=0B7_xr5uHmq-TYXBvczFBS1pGd3M)
+![Register](https://github.com/komarovn/DotsAndBoxes/blob/master/web/start.jpg)
 
 Make moves:  
-![Moves](https://drive.google.com/open?id=0B7_xr5uHmq-TN0E0OGdlbUpFQlU)
+![Moves](https://github.com/komarovn/DotsAndBoxes/blob/master/web/proc.jpg)
 
 Become a winner:  
-![Winner](https://drive.google.com/open?id=0B7_xr5uHmq-Td3RGblRiSWhDMTg)
+![Winner](https://github.com/komarovn/DotsAndBoxes/blob/master/web/win.jpg)
 
 ## Installation
 1. Run `compile-idl.bat` from root of project folder.
